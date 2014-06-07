@@ -1,10 +1,12 @@
 /*jslint node: true */
 "use strict";
 
+var express = require("express");
 var http = require("http");
 
 var DOMAIN_ID = "sbruchmann.staticdev";
 
+var app = express();
 var domainManager = null;
 var server = null;
 
@@ -20,10 +22,6 @@ function _handleConnection(socket) {
     socket.on('close', function _onSocketClose() {
         _connectedSockets.splice(_connectedSockets.indexOf(socket), 1);
     });
-}
-
-function _handleRequest(req, res) {
-    res.end("Hello world\n");
 }
 
 function closeServer(done) {
@@ -49,12 +47,13 @@ function closeServer(done) {
 
 function launchServer(options, done) {
     if (!server) {
-        server = http.createServer();
+        server = http.createServer(app);
     }
+
+    app.use(require("serve-static")(options.basepath));
 
     server
         .on("connection", _handleConnection)
-        .on("request", _handleRequest)
         .listen(options.port, done);
 }
 

@@ -1,0 +1,26 @@
+{
+  "name": "sbruchmann.static-preview",
+  "version": "0.0.1",
+  "description": "Runs your project on a static web server",
+  "repository": {
+    "type": "git@github.com:sbruchmann/static-preview.git"
+  },
+  "title": "Static Preview",
+  "author": "Steffen Bruchmann",
+  "license": "MIT",
+  "engines": {
+    "brackets": ">=0.40.0"
+  },
+  "keywords": [
+    "static",
+    "development",
+    "server"
+  ],
+  "categories": [
+    "general"
+  ],
+  "dependencies": {
+    "express": "^4.4.1",
+    "serve-static": "^1.2.1"
+  }
+}
