@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     var _              = brackets.getModule("thirdparty/lodash"),
         AppInit        = brackets.getModule("utils/AppInit"),
         CommandManager = brackets.getModule("command/CommandManager"),
+        Commands       = brackets.getModule("command/Commands"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         Menus          = brackets.getModule("command/Menus"),
         NodeDomain     = brackets.getModule("utils/NodeDomain"),
@@ -92,7 +93,12 @@ define(function (require, exports, module) {
         });
 
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
-        FILE_MENU.addMenuItem(CMD_STATIC_PREVIEW);
+        FILE_MENU.addMenuItem(
+            CMD_STATIC_PREVIEW,
+            null,
+            Menus.AFTER,
+            Commands.FILE_LIVE_FILE_PREVIEW
+        );
     }
 
     AppInit.appReady(_onAppReady);
