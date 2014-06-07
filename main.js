@@ -16,9 +16,18 @@ define(function (require, exports, module) {
 
     var domain = new NodeDomain(DOMAIN_ID, DOMAIN_PATH);
 
-    var STATIC_DEVELOPMENT_LAUNCH = "sbruchmann.staticdev.launch";
+    var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
-    function _handleStaticDevelopmentLaunch() {
+    var _isRunning = false;
+
+    function _handleProjectClose(event, directory) {
+    }
+
+    function _handleProjectOpen(event, directory) {
+        _currentProject = directory;
+    }
+
+    function _handleStaticPreview() {
         var config = {
             basepath: null,
             hostname: "0.0.0.0",
@@ -27,6 +36,23 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred();
         var reject = deferred.reject.bind(deferred);
         var resolve = deferred.resolve.bind(deferred);
+
+        console.debug("[Static Preview] _isRunning", _isRunning);
+
+        if (_isRunning) {
+            console.debug("[Static Preview] Attempting to close server");
+            domain.exec("closeServer")
+                .fail(function _errback(err) {
+                    console.error("[Static Preview]", err);
+                })
+                .then(function _callback() {
+                    console.debug("[Static Preview] server closed.");
+                    _isRunning = false;
+                    resolve();
+                });
+
+            return deferred.promise();
+        }
 
         if (!_currentProject) {
             _currentProject = ProjectManager.getProjectRoot();
@@ -41,17 +67,11 @@ define(function (require, exports, module) {
             })
             .then(function _callback() {
                 console.debug("[Static Development] Launched server.", config);
+                _isRunning = true;
                 resolve(config);
             });
 
         return deferred.promise();
-    }
-
-    function _handleProjectClose(event, directory) {
-    }
-
-    function _handleProjectOpen(event, directory) {
-        _currentProject = directory;
     }
 
     function _onAppReady() {
@@ -62,8 +82,8 @@ define(function (require, exports, module) {
             "projectClose": _handleProjectClose
         });
 
-        CommandManager.register("Static Preview", STATIC_DEVELOPMENT_LAUNCH, _handleStaticDevelopmentLaunch);
-        FILE_MENU.addMenuItem(STATIC_DEVELOPMENT_LAUNCH);
+        CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _handleStaticPreview);
+        FILE_MENU.addMenuItem(CMD_STATIC_PREVIEW);
     }
 
     AppInit.appReady(_onAppReady);

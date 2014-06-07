@@ -8,8 +8,43 @@ var DOMAIN_ID = "sbruchmann.staticdev";
 var domainManager = null;
 var server = null;
 
+var nextTick = process.nextTick;
+
+// Keep track of all connected sockets
+var _connectedSockets = [];
+
+// Keeps track of all connected sockets
+// and closes them if needed
+function _handleConnection(socket) {
+    _connectedSockets.push(socket);
+    socket.on('close', function _onSocketClose() {
+        _connectedSockets.splice(_connectedSockets.indexOf(socket), 1);
+    });
+}
+
 function _handleRequest(req, res) {
     res.end("Hello world\n");
+}
+
+function closeServer(done) {
+    if (!server) {
+        nextTick(done.bind(null, null));
+    }
+
+    // In order to shutdown a HTTP server,
+    // one has to destroy all connected sockets manually
+    _connectedSockets.forEach(function _iterate(socket) {
+        socket.destroy();
+    });
+
+    server.close(function callback(err) {
+        if (err) {
+            return done(err);
+        }
+
+        server = null;
+        done(null);
+    });
 }
 
 function launchServer(options, done) {
@@ -17,8 +52,10 @@ function launchServer(options, done) {
         server = http.createServer();
     }
 
-    server.on("request", _handleRequest);
-    server.listen(options.port, done);
+    server
+        .on("connection", _handleConnection)
+        .on("request", _handleRequest)
+        .listen(options.port, done);
 }
 
 exports.init = function init(manager) {
@@ -27,6 +64,13 @@ exports.init = function init(manager) {
     if (!manager.hasDomain(DOMAIN_ID)) {
         manager.registerDomain(DOMAIN_ID, { major: 0, minor: 1 });
     }
+
+    manager.registerCommand(
+        DOMAIN_ID,
+        "closeServer",
+        closeServer,
+        true
+    );
 
     manager.registerCommand(
         DOMAIN_ID,
