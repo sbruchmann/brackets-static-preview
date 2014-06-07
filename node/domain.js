@@ -1,10 +1,12 @@
 /*jslint node: true */
 "use strict";
 
+var _sharedProperties = require("../shared-properties.json");
 var express = require("express");
 var http = require("http");
 
-var DOMAIN_ID = "sbruchmann.staticdev";
+var _nodeCommands = _sharedProperties.node.commands;
+var DOMAIN_ID = _sharedProperties.DOMAIN_ID;
 
 var app = express();
 var domainManager = null;
@@ -66,14 +68,14 @@ exports.init = function init(manager) {
 
     manager.registerCommand(
         DOMAIN_ID,
-        "closeServer",
+        _nodeCommands.SERVER_CLOSE,
         closeServer,
         true
     );
 
     manager.registerCommand(
         DOMAIN_ID,
-        "launchServer",
+        _nodeCommands.SERVER_LAUNCH,
         launchServer,
         true
     );

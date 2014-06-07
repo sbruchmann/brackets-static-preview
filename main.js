@@ -2,14 +2,20 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var _              = brackets.getModule("thirdparty/lodash"),
-        AppInit        = brackets.getModule("utils/AppInit"),
-        CommandManager = brackets.getModule("command/CommandManager"),
-        Commands       = brackets.getModule("command/Commands"),
-        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
-        Menus          = brackets.getModule("command/Menus"),
-        NodeDomain     = brackets.getModule("utils/NodeDomain"),
-        ProjectManager = brackets.getModule("project/ProjectManager");
+    var _                = brackets.getModule("thirdparty/lodash"),
+        AppInit          = brackets.getModule("utils/AppInit"),
+        CommandManager   = brackets.getModule("command/CommandManager"),
+        Commands         = brackets.getModule("command/Commands"),
+        ExtensionUtils   = brackets.getModule("utils/ExtensionUtils"),
+        Menus            = brackets.getModule("command/Menus"),
+        NodeDomain       = brackets.getModule("utils/NodeDomain"),
+        ProjectManager   = brackets.getModule("project/ProjectManager"),
+        sharedProperties = require("text!shared-properties.json");
+
+    // TODO Add error handling
+    try {
+        sharedProperties = JSON.parse(sharedProperties);
+    } catch (err) {}
 
     var _currentProject = null;
 
@@ -18,8 +24,10 @@ define(function (require, exports, module) {
         port: 3000
     };
 
-    var DOMAIN_ID = "sbruchmann.staticdev";
+    var DOMAIN_ID = sharedProperties.node.DOMAIN_ID;
     var DOMAIN_PATH = ExtensionUtils.getModulePath(module, "node/domain.js");
+
+    var _nodeCommands = sharedProperties.node.commands;
 
     var domain = new NodeDomain(DOMAIN_ID, DOMAIN_PATH);
 
@@ -31,7 +39,7 @@ define(function (require, exports, module) {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var deferred = new $.Deferred();
 
-        domain.exec("closeServer")
+        domain.exec(_nodeCommands.SERVER_CLOSE)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 _isRunning = false;
@@ -69,7 +77,7 @@ define(function (require, exports, module) {
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
 
-        domain.exec("launchServer", config)
+        domain.exec(_nodeCommands.SERVER_LAUNCH, config)
             .fail(function _errback(err) {
                 console.error("[Static Preview]", err);
                 deferred.reject(err);

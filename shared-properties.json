@@ -1,0 +1,9 @@
+{
+    "node": {
+        "commands": {
+            "SERVER_CLOSE": "closeServer",
+            "SERVER_LAUNCH": "launchServer"
+        },
+        "DOMAIN_ID": "sbruchmann.staticpreview"
+    }
+}
