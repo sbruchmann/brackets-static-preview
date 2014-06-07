@@ -28,6 +28,7 @@ define(function (require, exports, module) {
     }
 
     function _handleStaticPreview() {
+        var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var config = {
             basepath: null,
             hostname: "0.0.0.0",
@@ -48,6 +49,7 @@ define(function (require, exports, module) {
                 .then(function _callback() {
                     console.debug("[Static Preview] server closed.");
                     _isRunning = false;
+                    command.setChecked(_isRunning);
                     resolve();
                 });
 
@@ -68,6 +70,7 @@ define(function (require, exports, module) {
             .then(function _callback() {
                 console.debug("[Static Development] Launched server.", config);
                 _isRunning = true;
+                command.setChecked(_isRunning);
                 resolve(config);
             });
 
