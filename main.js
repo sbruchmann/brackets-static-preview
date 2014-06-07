@@ -2,7 +2,8 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var AppInit        = brackets.getModule("utils/AppInit"),
+    var _              = brackets.getModule("thirdparty/lodash"),
+        AppInit        = brackets.getModule("utils/AppInit"),
         CommandManager = brackets.getModule("command/CommandManager"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         Menus          = brackets.getModule("command/Menus"),
@@ -10,6 +11,11 @@ define(function (require, exports, module) {
         ProjectManager = brackets.getModule("project/ProjectManager");
 
     var _currentProject = null;
+
+    var _DEFAULT_CONFIG = {
+        hostname: "0.0.0.0",
+        port: 3000
+    };
 
     var DOMAIN_ID = "sbruchmann.staticdev";
     var DOMAIN_PATH = ExtensionUtils.getModulePath(module, "node/domain.js");
@@ -20,6 +26,22 @@ define(function (require, exports, module) {
 
     var _isRunning = false;
 
+    function _closeServer() {
+        var command = CommandManager.get(CMD_STATIC_PREVIEW);
+        var deferred = new $.Deferred();
+
+        domain.exec("closeServer")
+            .fail(deferred.reject.bind(deferred))
+            .then(function _callback() {
+                _isRunning = false;
+                console.debug("[Static Preview] server closed.");
+                command.setChecked(_isRunning);
+                deferred.resolve();
+            });
+
+        return deferred.promise();
+    }
+
     function _handleProjectClose(event, directory) {
     }
 
@@ -27,35 +49,12 @@ define(function (require, exports, module) {
         _currentProject = directory;
     }
 
-    function _handleStaticPreview() {
+    function _launchServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
-        var config = {
-            basepath: null,
-            hostname: "0.0.0.0",
-            port: 3000
-        };
+        var config = _.cloneDeep(_DEFAULT_CONFIG);
         var deferred = new $.Deferred();
-        var reject = deferred.reject.bind(deferred);
-        var resolve = deferred.resolve.bind(deferred);
 
-        console.debug("[Static Preview] _isRunning", _isRunning);
-
-        if (_isRunning) {
-            console.debug("[Static Preview] Attempting to close server");
-            domain.exec("closeServer")
-                .fail(function _errback(err) {
-                    console.error("[Static Preview]", err);
-                })
-                .then(function _callback() {
-                    console.debug("[Static Preview] server closed.");
-                    _isRunning = false;
-                    command.setChecked(_isRunning);
-                    resolve();
-                });
-
-            return deferred.promise();
-        }
-
+        // Make sure that we have a reference to the current project
         if (!_currentProject) {
             _currentProject = ProjectManager.getProjectRoot();
         }
@@ -64,17 +63,21 @@ define(function (require, exports, module) {
 
         domain.exec("launchServer", config)
             .fail(function _errback(err) {
-                console.error("[Static Development]", err);
-                reject(err);
+                console.error("[Static Preview]", err);
+                deferred.reject(err);
             })
             .then(function _callback() {
-                console.debug("[Static Development] Launched server.", config);
                 _isRunning = true;
+                console.debug("[Static Preview] Launched server.", config);
                 command.setChecked(_isRunning);
-                resolve(config);
+                deferred.resolve(config);
             });
 
         return deferred.promise();
+    }
+
+    function _toggleStaticPreview() {
+        return _isRunning ? _closeServer() : _launchServer();
     }
 
     function _onAppReady() {
@@ -85,7 +88,7 @@ define(function (require, exports, module) {
             "projectClose": _handleProjectClose
         });
 
-        CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _handleStaticPreview);
+        CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
         FILE_MENU.addMenuItem(CMD_STATIC_PREVIEW);
     }
 
