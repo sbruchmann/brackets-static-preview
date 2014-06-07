@@ -47,6 +47,8 @@ define(function (require, exports, module) {
         if (_isRunning) {
             _closeServer();
         }
+
+        $(ProjectManager).off("projectClose", _handleProjectClose);
     }
 
     function _handleProjectOpen(event, directory) {
@@ -64,6 +66,8 @@ define(function (require, exports, module) {
         }
 
         config.basepath = _currentProject.fullPath;
+
+        $(ProjectManager).on("projectClose", _handleProjectClose);
 
         domain.exec("launchServer", config)
             .fail(function _errback(err) {
@@ -87,10 +91,7 @@ define(function (require, exports, module) {
     function _onAppReady() {
         var FILE_MENU = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
 
-        $(ProjectManager).on({
-            "projectOpen": _handleProjectOpen,
-            "projectClose": _handleProjectClose
-        });
+        $(ProjectManager).on("projectOpen", _handleProjectOpen);
 
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
         FILE_MENU.addMenuItem(
