@@ -8,7 +8,7 @@ Roadmap
 -------
 
   - [ ] Live reload web pages on save
-  - [ ] Implement logger as bottom panel in [Brackets][brackets]
+  - [ ] Implement logger as a bottom panel in [Brackets][brackets]
   - [ ] Launch (major) browsers automatically
     - [ ] [Google Chrome][chrome]
     - [ ] [Mozilla Firefox][firefox]
