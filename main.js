@@ -43,6 +43,9 @@ define(function (require, exports, module) {
     }
 
     function _handleProjectClose(event, directory) {
+        if (_isRunning) {
+            _closeServer();
+        }
     }
 
     function _handleProjectOpen(event, directory) {
