@@ -17,8 +17,6 @@ define(function (require, exports, module) {
         sharedProperties = JSON.parse(sharedProperties);
     } catch (err) {}
 
-    var _currentProject = null;
-
     var _DEFAULT_CONFIG = {
         hostname: "0.0.0.0",
         port: 3000
@@ -59,21 +57,12 @@ define(function (require, exports, module) {
         $(ProjectManager).off("projectClose", _handleProjectClose);
     }
 
-    function _handleProjectOpen(event, directory) {
-        _currentProject = directory;
-    }
-
     function _launchServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var config = _.cloneDeep(_DEFAULT_CONFIG);
         var deferred = new $.Deferred();
 
-        // Make sure that we have a reference to the current project
-        if (!_currentProject) {
-            _currentProject = ProjectManager.getProjectRoot();
-        }
-
-        config.basepath = _currentProject.fullPath;
+        config.basepath = ProjectManager.getProjectRoot().fullPath;
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
 
@@ -98,8 +87,6 @@ define(function (require, exports, module) {
 
     function _onAppReady() {
         var FILE_MENU = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-
-        $(ProjectManager).on("projectOpen", _handleProjectOpen);
 
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
         FILE_MENU.addMenuItem(

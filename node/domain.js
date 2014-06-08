@@ -8,7 +8,7 @@ var http = require("http");
 var _nodeCommands = _sharedProperties.node.commands;
 var DOMAIN_ID = _sharedProperties.node.DOMAIN_ID;
 
-var app = express();
+var app = null;
 var domainManager = null;
 var server = null;
 
@@ -42,6 +42,7 @@ function closeServer(done) {
             return done(err);
         }
 
+        app = null;
         server = null;
         done(null);
     });
@@ -50,13 +51,13 @@ function closeServer(done) {
 function launchServer(options, done) {
     var basepath = options.basepath;
 
+    app = express()
+        .use(require("serve-index")(basepath))
+        .use(require("serve-static")(basepath));
+
     if (!server) {
         server = http.createServer(app);
     }
-
-    app
-        .use(require("serve-index")(basepath))
-        .use(require("serve-static")(basepath));
 
     server
         .on("connection", _handleConnection)
