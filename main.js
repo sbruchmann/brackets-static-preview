@@ -2,15 +2,16 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var _                = brackets.getModule("thirdparty/lodash"),
-        AppInit          = brackets.getModule("utils/AppInit"),
-        CommandManager   = brackets.getModule("command/CommandManager"),
-        Commands         = brackets.getModule("command/Commands"),
-        ExtensionUtils   = brackets.getModule("utils/ExtensionUtils"),
-        Menus            = brackets.getModule("command/Menus"),
-        NodeDomain       = brackets.getModule("utils/NodeDomain"),
-        ProjectManager   = brackets.getModule("project/ProjectManager"),
-        sharedProperties = require("text!shared-properties.json");
+    var _                  = brackets.getModule("thirdparty/lodash"),
+        AppInit            = brackets.getModule("utils/AppInit"),
+        CommandManager     = brackets.getModule("command/CommandManager"),
+        Commands           = brackets.getModule("command/Commands"),
+        ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
+        Menus              = brackets.getModule("command/Menus"),
+        NodeDomain         = brackets.getModule("utils/NodeDomain"),
+        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
+        ProjectManager     = brackets.getModule("project/ProjectManager"),
+        sharedProperties   = require("text!shared-properties.json");
 
     // TODO Add error handling
     try {
@@ -21,6 +22,8 @@ define(function (require, exports, module) {
         hostname: "0.0.0.0",
         port: 3000
     };
+
+    var prefs = null;
 
     var DOMAIN_ID = sharedProperties.node.DOMAIN_ID;
     var DOMAIN_PATH = ExtensionUtils.getModulePath(module, "node/domain.js");
@@ -59,10 +62,12 @@ define(function (require, exports, module) {
 
     function _launchServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
-        var config = _.cloneDeep(_DEFAULT_CONFIG);
+        var config = {
+            basepath: ProjectManager.getProjectRoot().fullPath,
+            hostname: prefs.get("hostname"),
+            port: prefs.get("port")
+        };
         var deferred = new $.Deferred();
-
-        config.basepath = ProjectManager.getProjectRoot().fullPath;
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
 
@@ -81,6 +86,22 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
+    function _setupPrefs() {
+        prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
+
+        if (typeof prefs.get("port") !== "number") {
+            prefs.definePreference("port", "number", _DEFAULT_CONFIG.port);
+            prefs.set("port", _DEFAULT_CONFIG.port);
+            prefs.save();
+        }
+
+        if (typeof prefs.get("hostname") !== "string") {
+            prefs.definePreference("hostname", "string", _DEFAULT_CONFIG.hostname);
+            prefs.set("hostname", _DEFAULT_CONFIG.hostname);
+            prefs.save();
+        }
+    }
+
     function _toggleStaticPreview() {
         return _isRunning ? _closeServer() : _launchServer();
     }
@@ -88,6 +109,7 @@ define(function (require, exports, module) {
     function _onAppReady() {
         var FILE_MENU = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
 
+        _setupPrefs();
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
         FILE_MENU.addMenuItem(
             CMD_STATIC_PREVIEW,
