@@ -6,7 +6,7 @@ var express = require("express");
 var http = require("http");
 
 var _nodeCommands = _sharedProperties.node.commands;
-var DOMAIN_ID = _sharedProperties.DOMAIN_ID;
+var DOMAIN_ID = _sharedProperties.node.DOMAIN_ID;
 
 var app = express();
 var domainManager = null;
