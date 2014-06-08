@@ -48,11 +48,15 @@ function closeServer(done) {
 }
 
 function launchServer(options, done) {
+    var basepath = options.basepath;
+
     if (!server) {
         server = http.createServer(app);
     }
 
-    app.use(require("serve-static")(options.basepath));
+    app
+        .use(require("serve-index")(basepath))
+        .use(require("serve-static")(basepath));
 
     server
         .on("connection", _handleConnection)
