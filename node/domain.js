@@ -52,8 +52,8 @@ function launchServer(options, done) {
     var basepath = options.basepath;
 
     app = express()
-        .use(require("serve-index")(basepath))
-        .use(require("serve-static")(basepath));
+        .use(require("serve-static")(basepath))
+        .use(require("serve-index")(basepath));
 
     if (!server) {
         server = http.createServer(app);
