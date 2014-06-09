@@ -8,20 +8,15 @@ define(function (require, exports, module) {
         Commands           = brackets.getModule("command/Commands"),
         ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
         Menus              = brackets.getModule("command/Menus"),
-        NodeDomain         = brackets.getModule("utils/NodeDomain"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ProjectManager     = brackets.getModule("project/ProjectManager"),
+        ServerManager      = require("server/ServerManager"),
         sharedProperties   = require("text!shared-properties.json");
 
     // TODO Add error handling
     try {
         sharedProperties = JSON.parse(sharedProperties);
     } catch (err) {}
-
-    var _DEFAULT_CONFIG = {
-        hostname: "0.0.0.0",
-        port: 3000
-    };
 
     var prefs = null;
 
@@ -30,22 +25,17 @@ define(function (require, exports, module) {
 
     var _nodeCommands = sharedProperties.node.commands;
 
-    var domain = new NodeDomain(DOMAIN_ID, DOMAIN_PATH);
-
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
-
-    var _isRunning = false;
 
     function _closeServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var deferred = new $.Deferred();
 
-        domain.exec(_nodeCommands.SERVER_CLOSE)
+        ServerManager.closeServer()
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
-                _isRunning = false;
                 console.debug("[Static Preview] server closed.");
-                command.setChecked(_isRunning);
+                command.setChecked(false);
                 deferred.resolve();
             });
 
@@ -53,7 +43,7 @@ define(function (require, exports, module) {
     }
 
     function _handleProjectClose(event, directory) {
-        if (_isRunning) {
+        if (ServerManager.isRunning()) {
             _closeServer();
         }
 
@@ -71,15 +61,14 @@ define(function (require, exports, module) {
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
 
-        domain.exec(_nodeCommands.SERVER_LAUNCH, config)
+        ServerManager.launchServer(config)
             .fail(function _errback(err) {
                 console.error("[Static Preview]", err);
                 deferred.reject(err);
             })
             .then(function _callback() {
-                _isRunning = true;
                 console.debug("[Static Preview] Launched server.", config);
-                command.setChecked(_isRunning);
+                command.setChecked(true);
                 deferred.resolve(config);
             });
 
@@ -87,23 +76,25 @@ define(function (require, exports, module) {
     }
 
     function _setupPrefs() {
+        var defaults = ServerManager.getDefaultConfig();
+
         prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
         if (typeof prefs.get("port") !== "number") {
-            prefs.definePreference("port", "number", _DEFAULT_CONFIG.port);
-            prefs.set("port", _DEFAULT_CONFIG.port);
+            prefs.definePreference("port", "number", defaults.port);
+            prefs.set("port", defaults.port);
             prefs.save();
         }
 
         if (typeof prefs.get("hostname") !== "string") {
-            prefs.definePreference("hostname", "string", _DEFAULT_CONFIG.hostname);
-            prefs.set("hostname", _DEFAULT_CONFIG.hostname);
+            prefs.definePreference("hostname", "string", defaults.hostname);
+            prefs.set("hostname", defaults.hostname);
             prefs.save();
         }
     }
 
     function _toggleStaticPreview() {
-        return _isRunning ? _closeServer() : _launchServer();
+        return ServerManager.isRunning() ? _closeServer() : _launchServer();
     }
 
     function _onAppReady() {
