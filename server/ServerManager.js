@@ -3,11 +3,11 @@ define(function (require, exports, module) {
     "use strict";
 
     var _              = brackets.getModule("thirdparty/lodash"),
-        _config        = require("text!shared-properties.json"),
+        _DomainConfig  = require("text!server/DomainConfig.json"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain     = brackets.getModule("utils/NodeDomain");
 
-    _config = JSON.parse(_config).node;
+    _DomainConfig = JSON.parse(_DomainConfig).node;
 
     var _defaults = {
         hostname: "0.0.0.0",
@@ -17,7 +17,7 @@ define(function (require, exports, module) {
     var _isRunning = false;
 
     var domain = new NodeDomain(
-        _config.DOMAIN_ID,
+        _DomainConfig.DOMAIN_ID,
         ExtensionUtils.getModulePath(module, "ServerDomain.js")
     );
 
@@ -38,7 +38,7 @@ define(function (require, exports, module) {
     function closeServer() {
         var deferred = new $.Deferred();
 
-        domain.exec(_config.commands.SERVER_CLOSE)
+        domain.exec(_DomainConfig.commands.SERVER_CLOSE)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 _isRunning = false;
@@ -51,7 +51,7 @@ define(function (require, exports, module) {
     function launchServer(options) {
         var deferred = new $.Deferred();
 
-        domain.exec(_config.commands.SERVER_LAUNCH, options)
+        domain.exec(_DomainConfig.commands.SERVER_LAUNCH, options)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 _isRunning = true;

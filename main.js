@@ -10,20 +10,9 @@ define(function (require, exports, module) {
         Menus              = brackets.getModule("command/Menus"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ProjectManager     = brackets.getModule("project/ProjectManager"),
-        ServerManager      = require("server/ServerManager"),
-        sharedProperties   = require("text!shared-properties.json");
-
-    // TODO Add error handling
-    try {
-        sharedProperties = JSON.parse(sharedProperties);
-    } catch (err) {}
+        ServerManager      = require("server/ServerManager");
 
     var prefs = null;
-
-    var DOMAIN_ID = sharedProperties.node.DOMAIN_ID;
-    var DOMAIN_PATH = ExtensionUtils.getModulePath(module, "node/domain.js");
-
-    var _nodeCommands = sharedProperties.node.commands;
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 

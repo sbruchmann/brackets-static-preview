@@ -1,12 +1,12 @@
 /*jslint node: true */
 "use strict";
 
-var _sharedProperties = require("../shared-properties.json");
+var _DomainConfig = require("./DomainConfig.json").node;
 var express = require("express");
 var http = require("http");
 
-var _nodeCommands = _sharedProperties.node.commands;
-var DOMAIN_ID = _sharedProperties.node.DOMAIN_ID;
+var _commands = _DomainConfig.commands;
+var DOMAIN_ID = _DomainConfig.DOMAIN_ID;
 
 var app = null;
 var domainManager = null;
@@ -73,14 +73,14 @@ exports.init = function init(manager) {
 
     manager.registerCommand(
         DOMAIN_ID,
-        _nodeCommands.SERVER_CLOSE,
+        _commands.SERVER_CLOSE,
         closeServer,
         true
     );
 
     manager.registerCommand(
         DOMAIN_ID,
-        _nodeCommands.SERVER_LAUNCH,
+        _commands.SERVER_LAUNCH,
         launchServer,
         true
     );
