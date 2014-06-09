@@ -1,12 +1,12 @@
 /*jslint node: true */
 "use strict";
 
-var _DomainConfig = require("./DomainConfig.json").node;
+var _DomainConfig = require("./DomainConfig.json");
 var express = require("express");
 var http = require("http");
 
 var _commands = _DomainConfig.commands;
-var DOMAIN_ID = _DomainConfig.DOMAIN_ID;
+var DOMAIN_ID = _DomainConfig.id;
 
 var app = null;
 var domainManager = null;
@@ -73,14 +73,14 @@ exports.init = function init(manager) {
 
     manager.registerCommand(
         DOMAIN_ID,
-        _commands.SERVER_CLOSE,
+        _commands.CLOSE,
         closeServer,
         true
     );
 
     manager.registerCommand(
         DOMAIN_ID,
-        _commands.SERVER_LAUNCH,
+        _commands.LAUNCH,
         launchServer,
         true
     );

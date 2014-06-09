@@ -7,22 +7,19 @@ define(function (require, exports, module) {
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain     = brackets.getModule("utils/NodeDomain");
 
-    _DomainConfig = JSON.parse(_DomainConfig).node;
+    _DomainConfig = JSON.parse(_DomainConfig);
 
-    var _defaults = {
-        hostname: "0.0.0.0",
-        port: 3000
-    };
+    var _commands = _DomainConfig.commands;
 
     var _isRunning = false;
 
     var domain = new NodeDomain(
-        _DomainConfig.DOMAIN_ID,
+        _DomainConfig.id,
         ExtensionUtils.getModulePath(module, "ServerDomain.js")
     );
 
     function getDefaultConfig() {
-        return _.cloneDeep(_defaults);
+        return _.cloneDeep(_DomainConfig.defaults);
     }
 
     /**
@@ -38,7 +35,7 @@ define(function (require, exports, module) {
     function closeServer() {
         var deferred = new $.Deferred();
 
-        domain.exec(_DomainConfig.commands.SERVER_CLOSE)
+        domain.exec(_commands.CLOSE)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 _isRunning = false;
@@ -51,7 +48,7 @@ define(function (require, exports, module) {
     function launchServer(options) {
         var deferred = new $.Deferred();
 
-        domain.exec(_DomainConfig.commands.SERVER_LAUNCH, options)
+        domain.exec(_commands.LAUNCH, options)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 _isRunning = true;
