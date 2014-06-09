@@ -18,7 +18,7 @@ define(function (require, exports, module) {
 
     var domain = new NodeDomain(
         _config.DOMAIN_ID,
-        ExtensionUtils.getModulePath(module, "../node/domain.js")
+        ExtensionUtils.getModulePath(module, "ServerDomain.js")
     );
 
     function getDefaultConfig() {
