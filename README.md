@@ -1,14 +1,14 @@
 Static Preview
 ==============
 
-This extension allows you to run your current project on a static web server.
+This extension for [Brackets][brackets] allows you to run your current project on a static web server.
 **Note**: _Static Preview_ is currently work in progress.
 
 Roadmap
 -------
 
   - [ ] Live reload web pages on save
-  - [ ] Implement logger as a bottom panel in [Brackets][brackets]
+  - [ ] Implement logger as a bottom panel in Brackets
   - [ ] Launch (major) browsers automatically
     - [ ] [Google Chrome][chrome]
     - [ ] [Mozilla Firefox][firefox]
