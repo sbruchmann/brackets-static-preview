@@ -26,7 +26,12 @@ define(function (require, exports, module) {
     );
 
     function _setState(state) {
-        _currentState = state;
+        var prev = _currentState;
+
+        if (prev !== state) {
+            _currentState = state;
+            $(module.exports).triggerHandler("stateChange", _currentState);
+        }
     }
 
     function getCurrentState() {
