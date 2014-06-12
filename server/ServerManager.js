@@ -11,22 +11,30 @@ define(function (require, exports, module) {
 
     var _commands = _DomainConfig.commands;
 
-    var _isRunning = false;
+    var _STATES = {
+        CRASHED: "CRASHED",
+        IDLE: "IDLE",
+        LAUNCHING: "IDLE",
+        RUNNING: "RUNNING"
+    };
+
+    var _currentState = _STATES.IDLE;
 
     var domain = new NodeDomain(
         _DomainConfig.id,
         ExtensionUtils.getModulePath(module, "ServerDomain.js")
     );
 
-    function getDefaultConfig() {
-        return _.cloneDeep(_DomainConfig.defaults);
+    function _setState(state) {
+        _currentState = state;
     }
 
-    /**
-     * @TODO Improve state management
-     */
-    function isRunning() {
-        return _isRunning;
+    function getCurrentState() {
+        return _currentState;
+    }
+
+    function getDefaultConfig() {
+        return _.cloneDeep(_DomainConfig.defaults);
     }
 
     /**
@@ -36,9 +44,12 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred();
 
         domain.exec(_commands.CLOSE)
-            .fail(deferred.reject.bind(deferred))
+            .fail(function (err) {
+                _setState(_STATES.CRASHED);
+                deferred.reject(err);
+            })
             .then(function _callback() {
-                _isRunning = false;
+                _setState(_STATES.IDLE);
                 deferred.resolve.apply(deferred, arguments);
             });
 
@@ -48,10 +59,11 @@ define(function (require, exports, module) {
     function launchServer(options) {
         var deferred = new $.Deferred();
 
+        _setState(_STATES.LAUNCHING);
         domain.exec(_commands.LAUNCH, options)
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
-                _isRunning = true;
+                _setState(_STATES.RUNNING);
                 deferred.resolve.apply(deferred, arguments);
             });
 
@@ -59,8 +71,8 @@ define(function (require, exports, module) {
     }
 
     // Public API
+    exports.getCurrentState = getCurrentState;
     exports.getDefaultConfig = getDefaultConfig;
-    exports.isRunning = isRunning;
     exports.closeServer = closeServer;
     exports.launchServer = launchServer;
 });

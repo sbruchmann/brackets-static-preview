@@ -16,6 +16,10 @@ define(function (require, exports, module) {
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
+    function _isServerRunning() {
+        return ServerManager.getCurrentState() === "RUNNING";
+    }
+
     function _closeServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var deferred = new $.Deferred();
@@ -32,7 +36,7 @@ define(function (require, exports, module) {
     }
 
     function _handleProjectClose(event, directory) {
-        if (ServerManager.isRunning()) {
+        if (_isServerRunning()) {
             _closeServer();
         }
 
@@ -83,7 +87,7 @@ define(function (require, exports, module) {
     }
 
     function _toggleStaticPreview() {
-        return ServerManager.isRunning() ? _closeServer() : _launchServer();
+        return _isServerRunning() ? _closeServer() : _launchServer();
     }
 
     function _onAppReady() {
