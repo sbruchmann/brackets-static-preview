@@ -66,7 +66,9 @@ HTTPServer.prototype.launch = function launch(options, done) {
     this._setup(options);
     this._server
         .on("connection", this._handleConnection.bind(this))
-        .listen(options.port, options.hostname, done);
+        .listen(options.port, options.hostname, function _callback() {
+            done(null, options);
+        });
 
     return this;
 };

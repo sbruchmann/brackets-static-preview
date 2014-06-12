@@ -5,11 +5,15 @@ define(function (require, exports, module) {
     var _              = brackets.getModule("thirdparty/lodash"),
         _DomainConfig  = require("text!server/DomainConfig.json"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
-        NodeDomain     = brackets.getModule("utils/NodeDomain");
+        NodeDomain     = brackets.getModule("utils/NodeDomain"),
+        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
+        ProjectManager = brackets.getModule("project/ProjectManager");
 
     _DomainConfig = JSON.parse(_DomainConfig);
 
     var _commands = _DomainConfig.commands;
+
+    var _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
     var _STATES = {
         CRASHED: "CRASHED",
@@ -61,8 +65,13 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    function launchServer(options) {
+    function launchServer() {
         var deferred = new $.Deferred();
+        var options = {
+            basepath: ProjectManager.getProjectRoot().fullPath,
+            hostname: _prefs.get("hostname"),
+            port: _prefs.get("port")
+        };
 
         _setState(_STATES.LAUNCHING);
         domain.exec(_commands.LAUNCH, options)

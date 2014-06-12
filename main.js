@@ -45,21 +45,16 @@ define(function (require, exports, module) {
 
     function _launchServer() {
         var command = CommandManager.get(CMD_STATIC_PREVIEW);
-        var config = {
-            basepath: ProjectManager.getProjectRoot().fullPath,
-            hostname: prefs.get("hostname"),
-            port: prefs.get("port")
-        };
         var deferred = new $.Deferred();
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
 
-        ServerManager.launchServer(config)
+        ServerManager.launchServer()
             .fail(function _errback(err) {
                 console.error("[Static Preview]", err);
                 deferred.reject(err);
             })
-            .then(function _callback() {
+            .then(function _callback(config) {
                 console.debug("[Static Preview] Launched server.", config);
                 command.setChecked(true);
                 deferred.resolve(config);
