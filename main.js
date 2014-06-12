@@ -21,14 +21,12 @@ define(function (require, exports, module) {
     }
 
     function _closeServer() {
-        var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var deferred = new $.Deferred();
 
         ServerManager.closeServer()
             .fail(deferred.reject.bind(deferred))
             .then(function _callback() {
                 console.debug("[Static Preview] server closed.");
-                command.setChecked(false);
                 deferred.resolve();
             });
 
@@ -43,8 +41,11 @@ define(function (require, exports, module) {
         $(ProjectManager).off("projectClose", _handleProjectClose);
     }
 
+    function _handleServerStateChange($event, currentState) {
+        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(currentState === "RUNNING");
+    }
+
     function _launchServer() {
-        var command = CommandManager.get(CMD_STATIC_PREVIEW);
         var deferred = new $.Deferred();
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
@@ -56,7 +57,6 @@ define(function (require, exports, module) {
             })
             .then(function _callback(config) {
                 console.debug("[Static Preview] Launched server.", config);
-                command.setChecked(true);
                 deferred.resolve(config);
             });
 
@@ -90,6 +90,7 @@ define(function (require, exports, module) {
 
         _setupPrefs();
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
+        $(ServerManager).on("stateChange", _handleServerStateChange);
         FILE_MENU.addMenuItem(
             CMD_STATIC_PREVIEW,
             null,
