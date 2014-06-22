@@ -1,0 +1,17 @@
+#toolbar-staticpreview {
+    background: url(sprite.svg) no-repeat;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+#toolbar-staticpreview.is-CRASHED {
+    background-position: 0 -48px;
+}
+
+#toolbar-staticpreview.is-IDLE {
+    background-position: 0 0;
+}
+
+#toolbar-staticpreview.is-RUNNING {
+    background-position: 0 -24px;
+}

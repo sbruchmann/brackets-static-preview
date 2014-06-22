@@ -6,7 +6,8 @@ define(function (require) {
         Commands           = brackets.getModule("command/Commands"),
         Menus              = brackets.getModule("command/Menus"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ServerManager      = require("server/ServerManager");
+        ServerManager      = require("server/ServerManager"),
+        ToolbarButton      = require("toolbar/ToolbarButton");
 
     var prefs = null;
 
@@ -54,6 +55,7 @@ define(function (require) {
             Menus.AFTER,
             Commands.FILE_LIVE_FILE_PREVIEW
         );
+        ToolbarButton.init();
     }
 
     AppInit.appReady(_onAppReady);
