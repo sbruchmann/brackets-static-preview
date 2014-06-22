@@ -9,63 +9,67 @@ define(function (require, exports, module) {
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ProjectManager = brackets.getModule("project/ProjectManager");
 
+    // Creating jQuery objects is expensive; Keep them cached!
+    var $module = $(module.exports);
+    var $ProjectManager = $(ProjectManager);
+
+    // Alias `$module.triggerHandler`
+    var _emitEvent = $module.triggerHandler.bind($module);
+
     _DomainConfig = JSON.parse(_DomainConfig);
 
     var _commands = _DomainConfig.commands;
 
     var _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
-    var _STATES = {
-        CRASHED: "CRASHED",
-        IDLE: "IDLE",
-        LAUNCHING: "IDLE",
-        RUNNING: "RUNNING"
-    };
+    var STATE_ID_CRASHED = "RUNNING";
+    var STATE_ID_IDLE = "IDLE";
+    var STATE_ID_RUNNING = "RUNNING";
 
-    var _currentState = _STATES.IDLE;
+    var _currentState = STATE_ID_IDLE;
 
     var domain = new NodeDomain(
         _DomainConfig.id,
         ExtensionUtils.getModulePath(module, "ServerDomain.js")
     );
 
-    function _setState(state) {
-        var prev = _currentState;
+    function _setCurrentState(stateId, reason) {
+        var params = {};
 
-        if (prev !== state) {
-            _currentState = state;
-            $(module.exports).triggerHandler("stateChange", _currentState);
-        }
+        _currentState = stateId;
+        params.reason = reason || null;
+        params.stateId = stateId;
+
+        _emitEvent("stateChange", params);
     }
 
     function getCurrentState() {
         return _currentState;
     }
 
+    function isCrashed() {
+        return getCurrentState() === STATE_ID_CRASHED;
+    }
+
+    function isIdle() {
+        return getCurrentState() === STATE_ID_IDLE;
+    }
+
+    function isRunning() {
+        return getCurrentState() === STATE_ID_RUNNING;
+    }
+
     function getDefaultConfig() {
         return _.cloneDeep(_DomainConfig.defaults);
     }
 
-    /**
-     * @TODO What should happen if the server was not closed?
-     */
-    function closeServer() {
-        var deferred = new $.Deferred();
-
-        domain.exec(_commands.CLOSE)
-            .fail(function (err) {
-                _setState(_STATES.CRASHED);
-                deferred.reject(err);
-            })
-            .then(function _callback() {
-                _setState(_STATES.IDLE);
-                deferred.resolve.apply(deferred, arguments);
-            });
-
-        return deferred.promise();
+    function _autoStopServer(event) {
+        if (isRunning()) {
+            stop();
+        }
     }
 
-    function launchServer() {
+    function start() {
         var deferred = new $.Deferred();
         var options = {
             basepath: ProjectManager.getProjectRoot().fullPath,
@@ -73,11 +77,38 @@ define(function (require, exports, module) {
             port: _prefs.get("port")
         };
 
-        _setState(_STATES.LAUNCHING);
+        $(ProjectManager).on("projectClose", _autoStopServer);
+        $(ProjectManager).on("beforeAppClose", _autoStopServer);
+
         domain.exec(_commands.LAUNCH, options)
-            .fail(deferred.reject.bind(deferred))
+        .fail(function _errback(err) {
+            _setCurrentState(STATE_ID_CRASHED, err);
+            deferred.reject(err);
+        })
+        .then(function _callback() {
+            _setCurrentState(STATE_ID_RUNNING);
+            deferred.resolve.apply(deferred, arguments);
+        });
+
+        return deferred.promise();
+    }
+
+    /**
+     * @TODO What should happen if the server was not closed?
+     */
+    function stop() {
+        var deferred = new $.Deferred();
+
+        $(ProjectManager).off("projectClose", _autoStopServer);
+        $(ProjectManager).off("beforeAppClose", _autoStopServer);
+
+        domain.exec(_commands.CLOSE)
+            .fail(function (err) {
+                _setCurrentState(STATE_ID_CRASHED, err);
+                deferred.reject(err);
+            })
             .then(function _callback() {
-                _setState(_STATES.RUNNING);
+                _setCurrentState(STATE_ID_IDLE);
                 deferred.resolve.apply(deferred, arguments);
             });
 
@@ -85,8 +116,14 @@ define(function (require, exports, module) {
     }
 
     // Public API
+    exports.STATE_ID_CRASHED = STATE_ID_CRASHED;
+    exports.STATE_ID_IDLE = STATE_ID_IDLE;
+    exports.STATE_ID_RUNNING = STATE_ID_RUNNING;
     exports.getCurrentState = getCurrentState;
     exports.getDefaultConfig = getDefaultConfig;
-    exports.closeServer = closeServer;
-    exports.launchServer = launchServer;
+    exports.isCrashed = isCrashed;
+    exports.isIdle = isIdle;
+    exports.isRunning = isRunning;
+    exports.stop = stop;
+    exports.start = start;
 });

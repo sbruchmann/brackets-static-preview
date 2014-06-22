@@ -16,53 +16,8 @@ define(function (require, exports, module) {
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
-    function _isServerRunning() {
-        return ServerManager.getCurrentState() === "RUNNING";
-    }
-
-    function _closeServer() {
-        var deferred = new $.Deferred();
-
-        ServerManager.closeServer()
-            .fail(deferred.reject.bind(deferred))
-            .then(function _callback() {
-                console.debug("[Static Preview] server closed.");
-                deferred.resolve();
-            });
-
-        return deferred.promise();
-    }
-
-    function _handleProjectClose(event, directory) {
-        if (_isServerRunning()) {
-            _closeServer();
-        }
-
-        $(ProjectManager).off("projectClose", _handleProjectClose);
-        $(ProjectManager).off("beforeAppClose", _handleProjectClose);
-    }
-
     function _handleServerStateChange($event, currentState) {
-        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(currentState === "RUNNING");
-    }
-
-    function _launchServer() {
-        var deferred = new $.Deferred();
-
-        $(ProjectManager).on("projectClose", _handleProjectClose);
-        $(ProjectManager).on("beforeAppClose", _handleProjectClose);
-
-        ServerManager.launchServer()
-            .fail(function _errback(err) {
-                console.error("[Static Preview]", err);
-                deferred.reject(err);
-            })
-            .then(function _callback(config) {
-                console.debug("[Static Preview] Launched server.", config);
-                deferred.resolve(config);
-            });
-
-        return deferred.promise();
+        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(ServerManager.isRunning());
     }
 
     function _setupPrefs() {
@@ -84,7 +39,11 @@ define(function (require, exports, module) {
     }
 
     function _toggleStaticPreview() {
-        return _isServerRunning() ? _closeServer() : _launchServer();
+        if (!ServerManager.isRunning()) {
+            ServerManager.start();
+        } else {
+            ServerManager.stop();
+        }
     }
 
     function _onAppReady() {
