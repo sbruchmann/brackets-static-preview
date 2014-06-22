@@ -1,109 +1,46 @@
 /*globals $, brackets, define*/
-define(function (require, exports, module) {
+define(function (require) {
     "use strict";
 
-    var _                  = brackets.getModule("thirdparty/lodash"),
-        AppInit            = brackets.getModule("utils/AppInit"),
+    var AppInit            = brackets.getModule("utils/AppInit"),
         CommandManager     = brackets.getModule("command/CommandManager"),
         Commands           = brackets.getModule("command/Commands"),
-        ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
         Menus              = brackets.getModule("command/Menus"),
-        NodeDomain         = brackets.getModule("utils/NodeDomain"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager     = brackets.getModule("project/ProjectManager"),
-        sharedProperties   = require("text!shared-properties.json");
-
-    // TODO Add error handling
-    try {
-        sharedProperties = JSON.parse(sharedProperties);
-    } catch (err) {}
-
-    var _DEFAULT_CONFIG = {
-        hostname: "0.0.0.0",
-        port: 3000
-    };
+        ServerManager      = require("server/ServerManager");
 
     var prefs = null;
 
-    var DOMAIN_ID = sharedProperties.node.DOMAIN_ID;
-    var DOMAIN_PATH = ExtensionUtils.getModulePath(module, "node/domain.js");
-
-    var _nodeCommands = sharedProperties.node.commands;
-
-    var domain = new NodeDomain(DOMAIN_ID, DOMAIN_PATH);
-
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
-    var _isRunning = false;
-
-    function _closeServer() {
-        var command = CommandManager.get(CMD_STATIC_PREVIEW);
-        var deferred = new $.Deferred();
-
-        domain.exec(_nodeCommands.SERVER_CLOSE)
-            .fail(deferred.reject.bind(deferred))
-            .then(function _callback() {
-                _isRunning = false;
-                console.debug("[Static Preview] server closed.");
-                command.setChecked(_isRunning);
-                deferred.resolve();
-            });
-
-        return deferred.promise();
-    }
-
-    function _handleProjectClose(event, directory) {
-        if (_isRunning) {
-            _closeServer();
-        }
-
-        $(ProjectManager).off("projectClose", _handleProjectClose);
-    }
-
-    function _launchServer() {
-        var command = CommandManager.get(CMD_STATIC_PREVIEW);
-        var config = {
-            basepath: ProjectManager.getProjectRoot().fullPath,
-            hostname: prefs.get("hostname"),
-            port: prefs.get("port")
-        };
-        var deferred = new $.Deferred();
-
-        $(ProjectManager).on("projectClose", _handleProjectClose);
-
-        domain.exec(_nodeCommands.SERVER_LAUNCH, config)
-            .fail(function _errback(err) {
-                console.error("[Static Preview]", err);
-                deferred.reject(err);
-            })
-            .then(function _callback() {
-                _isRunning = true;
-                console.debug("[Static Preview] Launched server.", config);
-                command.setChecked(_isRunning);
-                deferred.resolve(config);
-            });
-
-        return deferred.promise();
+    function _handleServerStateChange() {
+        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(ServerManager.isRunning());
     }
 
     function _setupPrefs() {
+        var defaults = ServerManager.getDefaultConfig();
+
         prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
         if (typeof prefs.get("port") !== "number") {
-            prefs.definePreference("port", "number", _DEFAULT_CONFIG.port);
-            prefs.set("port", _DEFAULT_CONFIG.port);
+            prefs.definePreference("port", "number", defaults.port);
+            prefs.set("port", defaults.port);
             prefs.save();
         }
 
         if (typeof prefs.get("hostname") !== "string") {
-            prefs.definePreference("hostname", "string", _DEFAULT_CONFIG.hostname);
-            prefs.set("hostname", _DEFAULT_CONFIG.hostname);
+            prefs.definePreference("hostname", "string", defaults.hostname);
+            prefs.set("hostname", defaults.hostname);
             prefs.save();
         }
     }
 
     function _toggleStaticPreview() {
-        return _isRunning ? _closeServer() : _launchServer();
+        if (!ServerManager.isRunning()) {
+            ServerManager.start();
+        } else {
+            ServerManager.stop();
+        }
     }
 
     function _onAppReady() {
@@ -111,6 +48,7 @@ define(function (require, exports, module) {
 
         _setupPrefs();
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
+        $(ServerManager).on("stateChange", _handleServerStateChange);
         FILE_MENU.addMenuItem(
             CMD_STATIC_PREVIEW,
             null,
