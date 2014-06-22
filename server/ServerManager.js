@@ -62,7 +62,7 @@ define(function (require, exports, module) {
         return _.cloneDeep(_DomainConfig.defaults);
     }
 
-    function _autoStopServer(event) {
+    function _autoStopServer() {
         if (isRunning()) {
             stop();
         }
@@ -76,8 +76,8 @@ define(function (require, exports, module) {
             port: _prefs.get("port")
         };
 
-        $(ProjectManager).on("projectClose", _autoStopServer);
-        $(ProjectManager).on("beforeAppClose", _autoStopServer);
+        $ProjectManager.on("projectClose", _autoStopServer);
+        $ProjectManager.on("beforeAppClose", _autoStopServer);
 
         domain.exec(_commands.START, options)
         .fail(function _errback(err) {
@@ -98,8 +98,8 @@ define(function (require, exports, module) {
     function stop() {
         var deferred = new $.Deferred();
 
-        $(ProjectManager).off("projectClose", _autoStopServer);
-        $(ProjectManager).off("beforeAppClose", _autoStopServer);
+        $ProjectManager.off("projectClose", _autoStopServer);
+        $ProjectManager.off("beforeAppClose", _autoStopServer);
 
         domain.exec(_commands.STOP)
             .fail(function (err) {

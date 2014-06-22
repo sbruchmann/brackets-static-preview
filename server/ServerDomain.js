@@ -9,8 +9,6 @@ var DOMAIN_ID = _DomainConfig.id;
 var domainManager = null;
 var server = new HTTPServer();
 
-var nextTick = process.nextTick;
-
 function stop(done) {
     server.stop(done);
 }
