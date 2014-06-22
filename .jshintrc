@@ -1,0 +1,13 @@
+{
+    "browser": true,
+    "node": true,
+    "indent": 4,
+    "quotmark": "double",
+    "undef": true,
+    "unused": true,
+    "globals": {
+        "$": true,
+        "brackets": true,
+        "define": true
+    }
+}

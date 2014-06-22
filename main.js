@@ -1,4 +1,3 @@
-/*globals $, brackets, define*/
 define(function (require) {
     "use strict";
 
