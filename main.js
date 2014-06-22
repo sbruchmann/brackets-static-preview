@@ -1,22 +1,19 @@
 /*globals $, brackets, define*/
-define(function (require, exports, module) {
+define(function (require) {
     "use strict";
 
-    var _                  = brackets.getModule("thirdparty/lodash"),
-        AppInit            = brackets.getModule("utils/AppInit"),
+    var AppInit            = brackets.getModule("utils/AppInit"),
         CommandManager     = brackets.getModule("command/CommandManager"),
         Commands           = brackets.getModule("command/Commands"),
-        ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
         Menus              = brackets.getModule("command/Menus"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager     = brackets.getModule("project/ProjectManager"),
         ServerManager      = require("server/ServerManager");
 
     var prefs = null;
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
-    function _handleServerStateChange($event, currentState) {
+    function _handleServerStateChange() {
         CommandManager.get(CMD_STATIC_PREVIEW).setChecked(ServerManager.isRunning());
     }
 
