@@ -39,6 +39,7 @@ define(function (require, exports, module) {
         }
 
         $(ProjectManager).off("projectClose", _handleProjectClose);
+        $(ProjectManager).off("beforeAppClose", _handleProjectClose);
     }
 
     function _handleServerStateChange($event, currentState) {
@@ -49,6 +50,7 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred();
 
         $(ProjectManager).on("projectClose", _handleProjectClose);
+        $(ProjectManager).on("beforeAppClose", _handleProjectClose);
 
         ServerManager.launchServer()
             .fail(function _errback(err) {
