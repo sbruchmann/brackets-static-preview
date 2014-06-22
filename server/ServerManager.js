@@ -80,7 +80,7 @@ define(function (require, exports, module) {
         $(ProjectManager).on("projectClose", _autoStopServer);
         $(ProjectManager).on("beforeAppClose", _autoStopServer);
 
-        domain.exec(_commands.LAUNCH, options)
+        domain.exec(_commands.START, options)
         .fail(function _errback(err) {
             _setCurrentState(STATE_ID_CRASHED, err);
             deferred.reject(err);
@@ -102,7 +102,7 @@ define(function (require, exports, module) {
         $(ProjectManager).off("projectClose", _autoStopServer);
         $(ProjectManager).off("beforeAppClose", _autoStopServer);
 
-        domain.exec(_commands.CLOSE)
+        domain.exec(_commands.STOP)
             .fail(function (err) {
                 _setCurrentState(STATE_ID_CRASHED, err);
                 deferred.reject(err);

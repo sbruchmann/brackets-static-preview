@@ -38,7 +38,7 @@ HTTPServer.prototype._setup = function _setup(options) {
     return this;
 };
 
-HTTPServer.prototype.close = function close(done) {
+HTTPServer.prototype.stop = function stop(done) {
     var self = this;
 
     this._socketPool.forEach(function _iterate(socket) {
@@ -62,7 +62,7 @@ HTTPServer.prototype.close = function close(done) {
 /**
  * @TODO Add general error handling (EACCES, EADDRINUSE, etc.)
  */
-HTTPServer.prototype.launch = function launch(options, done) {
+HTTPServer.prototype.start = function start(options, done) {
     this._setup(options);
     this._server
         .on("connection", this._handleConnection.bind(this))

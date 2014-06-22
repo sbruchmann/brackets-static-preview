@@ -12,12 +12,12 @@ var server = new HTTPServer();
 
 var nextTick = process.nextTick;
 
-function closeServer(done) {
-    server.close(done);
+function stop(done) {
+    server.stop(done);
 }
 
-function launchServer(options, done) {
-    server.launch(options, done);
+function start(options, done) {
+    server.start(options, done);
 }
 
 exports.init = function init(manager) {
@@ -27,17 +27,6 @@ exports.init = function init(manager) {
         manager.registerDomain(DOMAIN_ID, { major: 0, minor: 1 });
     }
 
-    manager.registerCommand(
-        DOMAIN_ID,
-        _commands.CLOSE,
-        closeServer,
-        true
-    );
-
-    manager.registerCommand(
-        DOMAIN_ID,
-        _commands.LAUNCH,
-        launchServer,
-        true
-    );
+    manager.registerCommand(DOMAIN_ID, _commands.STOP, stop, true);
+    manager.registerCommand(DOMAIN_ID, _commands.START, start, true);
 };
