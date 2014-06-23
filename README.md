@@ -4,6 +4,16 @@ Static Preview
 This extension for [Brackets][brackets] allows you to run your current project on a static web server.
 **Note**: _Static Preview_ is currently work in progress.
 
+Settings
+--------
+
+Open your preferences via `Debug -> Open Preferences File` and edit the following settings:
+
+  - `sbruchmann.staticpreview.port` (default: `3000`)  
+    Specifies which port _Static Preview_ will listen at
+  - `sbruchmann.staticpreview.hostname` (default: `"0.0.0.0"`)  
+    Specifies which hostname _Static Preview_ will use
+
 Roadmap
 -------
 
