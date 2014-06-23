@@ -84,8 +84,8 @@ define(function (require, exports, module) {
             _setCurrentState(STATE_ID_CRASHED, err);
             deferred.reject(err);
         })
-        .then(function _callback() {
-            _setCurrentState(STATE_ID_RUNNING);
+        .then(function _callback(config) {
+            _setCurrentState(STATE_ID_RUNNING, { params: config });
             deferred.resolve.apply(deferred, arguments);
         });
 

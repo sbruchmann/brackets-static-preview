@@ -5,6 +5,7 @@ define(function (require) {
         CommandManager     = brackets.getModule("command/CommandManager"),
         Commands           = brackets.getModule("command/Commands"),
         Menus              = brackets.getModule("command/Menus"),
+        NativeApp          = brackets.getModule("utils/NativeApp"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ServerManager      = require("server/ServerManager"),
         ToolbarButton      = require("toolbar/ToolbarButton");
@@ -13,8 +14,19 @@ define(function (require) {
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
 
-    function _handleServerStateChange() {
-        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(ServerManager.isRunning());
+    function _launchDefaultBrowser(options) {
+        var url = "http://" + options.hostname + ":" + options.port + "/";
+        NativeApp.openURLInDefaultBrowser(url);
+    }
+
+    function _handleServerStateChange(event, data) {
+        var isRunning = ServerManager.isRunning();
+
+        CommandManager.get(CMD_STATIC_PREVIEW).setChecked(isRunning);
+
+        if (isRunning) {
+            _launchDefaultBrowser(data.reason.params);
+        }
     }
 
     function _setupPrefs() {
