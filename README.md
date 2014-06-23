@@ -9,7 +9,7 @@ Usage
 
 1. Open Brackets
 2. Start _Static Preview_ via the `File -> Static Preview` or by clicking on the toolbar icon
-3. Visit http://localhost:3000 in your browser(s).
+3. Visit [http://localhost:3000](http://localhost:3000) in your browser(s).
 
 **Note**: _Static Preview_ will be automatically stopped when switching projects or reloading Brackets.
 
