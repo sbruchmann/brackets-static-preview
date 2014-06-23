@@ -4,6 +4,15 @@ Static Preview
 This extension for [Brackets][brackets] allows you to run your current project on a static web server.
 **Note**: _Static Preview_ is currently work in progress.
 
+Usage
+-----
+
+1. Open Brackets
+2. Start _Static Preview_ via the `File -> Static Preview` or by clicking on the toolbar icon
+3. Visit http://localhost:3000 in your browser(s).
+
+**Note**: _Static Preview_ will be automatically stopped when switching projects or reloading Brackets.
+
 Settings
 --------
 
