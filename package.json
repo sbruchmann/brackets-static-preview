@@ -1,6 +1,6 @@
 {
   "name": "sbruchmann.static-preview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Runs your project on a static web server",
   "repository": {
     "type": "git@github.com:sbruchmann/static-preview.git"
