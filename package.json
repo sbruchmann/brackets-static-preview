@@ -6,6 +6,7 @@
     "type": "git",
     "url": "git@github.com:sbruchmann/static-preview.git"
   },
+  "homepage": "https://github.com/sbruchmann/brackets-static-preview",
   "title": "Static Preview",
   "author": "Steffen Bruchmann",
   "license": "MIT",
