@@ -3,7 +3,8 @@
   "version": "0.1.1",
   "description": "Runs your project on a static web server",
   "repository": {
-    "type": "git@github.com:sbruchmann/static-preview.git"
+    "type": "git",
+    "url": "git@github.com:sbruchmann/static-preview.git"
   },
   "title": "Static Preview",
   "author": "Steffen Bruchmann",
