@@ -2,8 +2,8 @@ define(function (require, exports) {
     "use strict";
 
     // Module dependencies
-    var PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ServerManager      = require("server/ServerManager");
+    var _                  = brackets.getModule("thirdparty/lodash"),
+        PreferencesManager = brackets.getModule("preferences/PreferencesManager");
 
     /**
      * Reference to extension preferences; Gets initialized by `setupPreferences()`
@@ -12,24 +12,31 @@ define(function (require, exports) {
     var _prefs = null;
 
     /**
+     * Configuration of settings for use in `setupPreferences()`
+     */
+    var _settings = {
+        hostname: {
+            default: "0.0.0.0",
+            type: "string"
+        },
+        port: {
+            default: 3000,
+            type: "number"
+        }
+    };
+
+    /**
      * Defines default preferences
      */
     function setupPreferences() {
-        var defaults = ServerManager.getDefaultConfig();
-
         _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
-
-        if (typeof _prefs.get("port") !== "number") {
-            _prefs.definePreference("port", "number", defaults.port);
-            _prefs.set("port", defaults.port);
-            _prefs.save();
-        }
-
-        if (typeof _prefs.get("hostname") !== "string") {
-            _prefs.definePreference("hostname", "string", defaults.hostname);
-            _prefs.set("hostname", defaults.hostname);
-            _prefs.save();
-        }
+        _.each(_settings, function _iterate(setting, id) {
+            if (typeof _prefs.get(id) !== setting.type) {
+                _prefs.definePreference(id, setting.type, setting["default"]);
+                _prefs.set(id, setting["default"]);
+                _prefs.save();
+            }
+        });
     }
 
     // Define public API

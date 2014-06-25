@@ -1,8 +1,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var _              = brackets.getModule("thirdparty/lodash"),
-        _DomainConfig  = require("text!server/DomainConfig.json"),
+    var _DomainConfig  = require("text!server/DomainConfig.json"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain     = brackets.getModule("utils/NodeDomain"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
@@ -56,10 +55,6 @@ define(function (require, exports, module) {
 
     function isRunning() {
         return getCurrentState() === STATE_ID_RUNNING;
-    }
-
-    function getDefaultConfig() {
-        return _.cloneDeep(_DomainConfig.defaults);
     }
 
     function _autoStopServer() {
@@ -119,7 +114,6 @@ define(function (require, exports, module) {
     exports.STATE_ID_IDLE = STATE_ID_IDLE;
     exports.STATE_ID_RUNNING = STATE_ID_RUNNING;
     exports.getCurrentState = getCurrentState;
-    exports.getDefaultConfig = getDefaultConfig;
     exports.isCrashed = isCrashed;
     exports.isIdle = isIdle;
     exports.isRunning = isRunning;
