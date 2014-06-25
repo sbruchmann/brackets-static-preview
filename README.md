@@ -35,6 +35,13 @@ Open your preferences via `Debug -> Open Preferences File` and edit the followin
   - `sbruchmann.staticpreview.hostname` (default: `"0.0.0.0"`)  
     Specifies which hostname _Static Preview_ will use
 
+Known Issues
+------------
+
+### Windows 7
+
+Static Preview doesn’t work on `0.0.0.0`. Workaround: Set `hostname` to `"localhost"`. This will be fixed in the next release.
+
 Roadmap
 -------
 
