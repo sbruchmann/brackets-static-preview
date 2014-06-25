@@ -4,8 +4,8 @@ define(function (require, exports, module) {
     var _DomainConfig  = require("text!server/DomainConfig.json"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain     = brackets.getModule("utils/NodeDomain"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager = brackets.getModule("project/ProjectManager");
+        ProjectManager = brackets.getModule("project/ProjectManager"),
+        SettingsManager = require("settings/SettingsManager");
 
     // Creating jQuery objects is expensive; Keep them cached!
     var $module = $(module.exports);
@@ -17,8 +17,6 @@ define(function (require, exports, module) {
     _DomainConfig = JSON.parse(_DomainConfig);
 
     var _commands = _DomainConfig.commands;
-
-    var _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
     var STATE_ID_CRASHED = "RUNNING";
     var STATE_ID_IDLE = "IDLE";
@@ -67,8 +65,8 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred();
         var options = {
             basepath: ProjectManager.getProjectRoot().fullPath,
-            hostname: _prefs.get("hostname"),
-            port: _prefs.get("port")
+            hostname: SettingsManager.getSetting("hostname"),
+            port: SettingsManager.getSetting("port")
         };
 
         $ProjectManager.on("projectClose", _autoStopServer);

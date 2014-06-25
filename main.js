@@ -10,6 +10,7 @@ define(function (require) {
         ToolbarButton      = require("toolbar/ToolbarButton");
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
+    var CMD_STATIC_PREVIEW_SETTINGS = "sbruchmann.staticpreview.settings";
 
     function _handleServerStateChange() {
         CommandManager.get(CMD_STATIC_PREVIEW).setChecked(ServerManager.isRunning());
@@ -28,13 +29,23 @@ define(function (require) {
 
         SettingsManager.setupPreferences();
         CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
+        CommandManager.register("Static Preview Settings\u2026", CMD_STATIC_PREVIEW_SETTINGS, SettingsManager.showSettingsDialog);
         $(ServerManager).on("stateChange", _handleServerStateChange);
+
         FILE_MENU.addMenuItem(
             CMD_STATIC_PREVIEW,
             null,
             Menus.AFTER,
             Commands.FILE_LIVE_FILE_PREVIEW
         );
+
+        FILE_MENU.addMenuItem(
+            CMD_STATIC_PREVIEW_SETTINGS,
+            null,
+            Menus.AFTER,
+            CMD_STATIC_PREVIEW
+        );
+
         ToolbarButton.init();
     }
 
