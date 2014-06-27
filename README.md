@@ -25,13 +25,6 @@ Usage
 
 **Note**: _Static Preview_ will be automatically stopped when switching projects or reloading Brackets.
 
-Known Issues
-------------
-
-### Windows 7
-
-Static Preview doesn’t work on `0.0.0.0`. Workaround: Set `hostname` to `"localhost"`. This will be fixed in the next release.
-
 Roadmap
 -------
 
