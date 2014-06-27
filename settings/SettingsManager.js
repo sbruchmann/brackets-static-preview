@@ -7,9 +7,7 @@ define(function (require, exports) {
         Dialogs            = brackets.getModule("widgets/Dialogs"),
         DialogTemplate     = require("text!settings/dialog-settings.html"),
         ExtensionStrings   = require("i18n!nls/strings"),
-        FileUtils          = brackets.getModule("file/FileUtils"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager     = brackets.getModule("project/ProjectManager"),
         ServerManager      = require("server/ServerManager"),
         Strings            = brackets.getModule("strings");
 
@@ -52,14 +50,6 @@ define(function (require, exports) {
      */
     function getSetting(id) {
         return _prefs.get(id);
-    }
-
-    /**
-     * Returns the name of the current project.
-     * @return {String} Project name
-     */
-    function _getProjectName() {
-        return FileUtils.getBaseName(ProjectManager.getProjectRoot().fullPath);
     }
 
     /**
@@ -106,7 +96,7 @@ define(function (require, exports) {
         var $dlg = null;
         var dialog = Dialogs.showModalDialog(
             DefaultDialogs.DIALOG_ID_INFO,
-            ExtensionStrings.DIALOG_SETTINGS_TITLE + ": " + _getProjectName(),
+            ExtensionStrings.DIALOG_SETTINGS_TITLE,
             _renderDialogTemplate({ settings: _settings }),
             [
                 {
