@@ -9,6 +9,7 @@ define(function (require) {
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ServerManager      = require("server/ServerManager"),
         SettingsManager    = require("settings/SettingsManager"),
+        Strings            = require("i18n!nls/strings"),
         ToolbarButton      = require("toolbar/ToolbarButton");
 
     var CMD_STATIC_PREVIEW = "sbruchmann.staticpreview";
@@ -41,8 +42,8 @@ define(function (require) {
         var FILE_MENU = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
 
         SettingsManager.setupPreferences();
-        CommandManager.register("Static Preview", CMD_STATIC_PREVIEW, _toggleStaticPreview);
-        CommandManager.register("Static Preview Settings\u2026", CMD_STATIC_PREVIEW_SETTINGS, SettingsManager.showSettingsDialog);
+        CommandManager.register(Strings.CMD_STATIC_PREVIEW, CMD_STATIC_PREVIEW, _toggleStaticPreview);
+        CommandManager.register(Strings.CMD_STATIC_PREVIEW_SETTINGS, CMD_STATIC_PREVIEW_SETTINGS, SettingsManager.showSettingsDialog);
         $(ServerManager).on("stateChange", _handleServerStateChange);
 
         FILE_MENU.addMenuItem(
