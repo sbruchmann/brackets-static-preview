@@ -1,7 +1,7 @@
 Static Preview
 ==============
 
-This extension for [Brackets][brackets] allows you to run your current project on a static web server.
+This extension for [Brackets](http://brackets.io/) allows you to run your current project on a static web server.
 **Note**: _Static Preview_ is currently work in progress.
 
 Usage
