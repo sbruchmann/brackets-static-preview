@@ -61,6 +61,31 @@ define(function (require, exports, module) {
         }
     }
 
+    /**
+     * Restarts the server.
+     * @return {(Promise|null)}
+     */
+    function restart() {
+        var deferred = new $.Deferred();
+        var reject, resolve;
+
+        if (!isRunning()) {
+            return null;
+        }
+
+        reject = deferred.reject.bind(deferred);
+        resolve = deferred.resolve.bind(deferred);
+
+        stop()
+            .fail(reject)
+            .then(function _callback() {
+                return start();
+            })
+            .then(resolve, reject);
+
+        return deferred.promise();
+    }
+
     function start() {
         var deferred = new $.Deferred();
         var options = {
@@ -117,4 +142,5 @@ define(function (require, exports, module) {
     exports.isRunning = isRunning;
     exports.stop = stop;
     exports.start = start;
+    exports.restart = restart;
 });

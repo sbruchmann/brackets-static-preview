@@ -10,6 +10,7 @@ define(function (require, exports) {
         FileUtils          = brackets.getModule("file/FileUtils"),
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ProjectManager     = brackets.getModule("project/ProjectManager"),
+        ServerManager      = require("server/ServerManager"),
         Strings            = brackets.getModule("strings");
 
     /**
@@ -70,11 +71,20 @@ define(function (require, exports) {
             return;
         }
 
-        // Save settings
-        _settings.forEach(function _iterate(setting) {
-            _prefs.set(setting.id, $dlg.find("#staticpreview-setting-" + setting.id).val());
-            _prefs.save();
-        });
+        if (action === "save-settings") {
+            _settings.forEach(function _iterate(setting) {
+                _prefs.set(setting.id, $dlg.find("#staticpreview-setting-" + setting.id).val());
+                _prefs.save();
+            });
+
+            if (ServerManager.isRunning()) {
+                _showRestartDialog();
+            }
+        }
+
+        if (action === "restart-server") {
+            ServerManager.restart();
+        }
     }
 
     /**
@@ -106,7 +116,7 @@ define(function (require, exports) {
                 },
                 {
                     className: Dialogs.DIALOG_BTN_CLASS_PRIMARY,
-                    id: Dialogs.DIALOG_BTN_OK,
+                    id: "save-settings",
                     text: Strings.DONE
                 }
             ]
@@ -119,6 +129,26 @@ define(function (require, exports) {
             );
         });
         dialog.getPromise().then(_handleDialogAction.bind(null, $dlg));
+    }
+
+    function _showRestartDialog() {
+        Dialogs.showModalDialog(
+            DefaultDialogs.DIALOG_ID_INFO,
+            ExtensionStrings.DIALOG_RESTART_TITLE,
+            ExtensionStrings.DIALOG_RESTART_TEXT,
+            [
+                {
+                    className: Dialogs.DIALOG_BTN_CLASS_NORMAL,
+                    id: Dialogs.DIALOG_BTN_CANCEL,
+                    text: Strings.CANCEL
+                },
+                {
+                    className: Dialogs.DIALOG_BTN_CLASS_PRIMARY,
+                    id: "restart-server",
+                    text: ExtensionStrings.RESTART
+                }
+            ]
+        ).getPromise().then(_handleDialogAction.bind(null, null));
     }
 
     // Define public API
