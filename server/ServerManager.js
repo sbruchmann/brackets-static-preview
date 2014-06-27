@@ -1,12 +1,11 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var _              = brackets.getModule("thirdparty/lodash"),
-        _DomainConfig  = require("text!server/DomainConfig.json"),
+    var _DomainConfig  = require("text!server/DomainConfig.json"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain     = brackets.getModule("utils/NodeDomain"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager = brackets.getModule("project/ProjectManager");
+        ProjectManager = brackets.getModule("project/ProjectManager"),
+        SettingsManager = require("settings/SettingsManager");
 
     // Creating jQuery objects is expensive; Keep them cached!
     var $module = $(module.exports);
@@ -18,8 +17,6 @@ define(function (require, exports, module) {
     _DomainConfig = JSON.parse(_DomainConfig);
 
     var _commands = _DomainConfig.commands;
-
-    var _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
 
     var STATE_ID_CRASHED = "RUNNING";
     var STATE_ID_IDLE = "IDLE";
@@ -58,22 +55,43 @@ define(function (require, exports, module) {
         return getCurrentState() === STATE_ID_RUNNING;
     }
 
-    function getDefaultConfig() {
-        return _.cloneDeep(_DomainConfig.defaults);
-    }
-
     function _autoStopServer() {
         if (isRunning()) {
             stop();
         }
     }
 
+    /**
+     * Restarts the server.
+     * @return {(Promise|null)}
+     */
+    function restart() {
+        var deferred = new $.Deferred();
+        var reject, resolve;
+
+        if (!isRunning()) {
+            return null;
+        }
+
+        reject = deferred.reject.bind(deferred);
+        resolve = deferred.resolve.bind(deferred);
+
+        stop()
+            .fail(reject)
+            .then(function _callback() {
+                return start();
+            })
+            .then(resolve, reject);
+
+        return deferred.promise();
+    }
+
     function start() {
         var deferred = new $.Deferred();
         var options = {
             basepath: ProjectManager.getProjectRoot().fullPath,
-            hostname: _prefs.get("hostname"),
-            port: _prefs.get("port")
+            hostname: SettingsManager.getSetting("hostname"),
+            port: SettingsManager.getSetting("port")
         };
 
         $ProjectManager.on("projectClose", _autoStopServer);
@@ -119,10 +137,10 @@ define(function (require, exports, module) {
     exports.STATE_ID_IDLE = STATE_ID_IDLE;
     exports.STATE_ID_RUNNING = STATE_ID_RUNNING;
     exports.getCurrentState = getCurrentState;
-    exports.getDefaultConfig = getDefaultConfig;
     exports.isCrashed = isCrashed;
     exports.isIdle = isIdle;
     exports.isRunning = isRunning;
     exports.stop = stop;
     exports.start = start;
+    exports.restart = restart;
 });
