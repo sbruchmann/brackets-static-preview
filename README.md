@@ -25,16 +25,6 @@ Usage
 
 **Note**: _Static Preview_ will be automatically stopped when switching projects or reloading Brackets.
 
-Settings
---------
-
-Open your preferences via `Debug -> Open Preferences File` and edit the following settings:
-
-  - `sbruchmann.staticpreview.port` (default: `3000`)  
-    Specifies which port _Static Preview_ will listen at
-  - `sbruchmann.staticpreview.hostname` (default: `"0.0.0.0"`)  
-    Specifies which hostname _Static Preview_ will use
-
 Known Issues
 ------------
 
