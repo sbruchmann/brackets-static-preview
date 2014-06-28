@@ -6,7 +6,6 @@ define(function (require) {
         Commands           = brackets.getModule("command/Commands"),
         Menus              = brackets.getModule("command/Menus"),
         NativeApp          = brackets.getModule("utils/NativeApp"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         ServerManager      = require("server/ServerManager"),
         SettingsManager    = require("settings/SettingsManager"),
         Strings            = require("i18n!nls/strings"),
