@@ -1,6 +1,6 @@
 define({
     "CMD_STATIC_PREVIEW": "Statische Vorschau",
-    "CMD_STATIC_PREVIEW": "Statische Vorschau konfigurieren\u2026",
+    "CMD_STATIC_PREVIEW_SETTINGS": "Statische Vorschau konfigurieren\u2026",
     "RESTART": "Server neustarten",
     "DIALOG_RESTART_TITLE": "Einstellungen übernehmen",
     "DIALOG_RESTART_TEXT": "Um die geänderten Einstellungen zu übernehmen, muss Static Preview neugestartet werden.",
