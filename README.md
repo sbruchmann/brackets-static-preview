@@ -13,16 +13,15 @@ Usage
 **Note**: _Static Preview_ will be automatically stopped when switching projects or reloading Brackets.
 
 
-LiveDevelopment vs. Static Preview
-----------------------------------
+Difference between LiveDevelopment and Static Preview
+-----------------------------------------------------
 
 LiveDevelopment opens a live connection via the remote debugger protocol to your local browser and updates HTML and CSS updates as you type, along with some other niceties.
 
-Problems with LiveDevelopment:
+However, there are some limitations when using LiveDevelopment:
   - currently works only with Google Chrome
-  - you can’t open your developer tools while LiveDevelopment is active
-  - although the project is served via a local server, you can’t visit it with a different browser/device
-    Static Preview
+  - you can’t open Chrome Developer Tools while LiveDevelopment is active
+  - although the current project is served via a local server, you can’t visit it with a different browser/device
 
 Static Preview starts an [express.js](http://expressjs.com/) server behind the scenes and uses your current project root as its base directory. This allows you to use your developer tools and/or visit your project with any browser/device you want.
 
