@@ -7,6 +7,7 @@ define(function (require) {
         Menus              = brackets.getModule("command/Menus"),
         NativeApp          = brackets.getModule("utils/NativeApp"),
         ServerManager      = require("server/ServerManager"),
+        SettingsDialog     = require("settings/SettingsDialog"),
         SettingsManager    = require("settings/SettingsManager"),
         Strings            = require("i18n!nls/strings"),
         ToolbarButton      = require("toolbar/ToolbarButton");
@@ -42,7 +43,7 @@ define(function (require) {
 
         SettingsManager.setupPreferences();
         CommandManager.register(Strings.CMD_STATIC_PREVIEW, CMD_STATIC_PREVIEW, _toggleStaticPreview);
-        CommandManager.register(Strings.CMD_STATIC_PREVIEW_SETTINGS, CMD_STATIC_PREVIEW_SETTINGS, SettingsManager.showSettingsDialog);
+        CommandManager.register(Strings.CMD_STATIC_PREVIEW_SETTINGS, CMD_STATIC_PREVIEW_SETTINGS, SettingsDialog.show);
         $(ServerManager).on("stateChange", _handleServerStateChange);
 
         FILE_MENU.addMenuItem(
