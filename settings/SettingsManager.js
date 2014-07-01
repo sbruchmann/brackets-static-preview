@@ -46,6 +46,16 @@ define(function (require, exports) {
     ];
 
     /**
+     * Abstraction for iterating over settings.
+     * @param {Function<(String, Object)>} iterator
+     */
+    function _eachSetting(iterator) {
+        _settings.forEach(function _iterate(setting) {
+            iterator(setting.id, setting);
+        });
+    }
+
+    /**
      * Returns the value for a specific setting.
      * @param {String} id
      * @return {?}
@@ -64,8 +74,8 @@ define(function (require, exports) {
         }
 
         if (action === "save-settings") {
-            _settings.forEach(function _iterate(setting) {
-                _prefs.set(setting.id, $dlg.find("#staticpreview-setting-" + setting.id).val());
+            _eachSetting(function (id) {
+                _prefs.set(id, $dlg.find("#staticpreview-setting-" + id).val());
                 _prefs.save();
             });
 
@@ -84,9 +94,7 @@ define(function (require, exports) {
      */
     function setupPreferences() {
         _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
-        _settings.forEach(function _iterate(setting) {
-            var id = setting.id;
-
+        _eachSetting(function _iterate(id, setting) {
             if (typeof _prefs.get(id) !== setting.type) {
                 _prefs.definePreference(id, setting.type, setting.default);
                 _prefs.set(id, setting.default);
@@ -99,7 +107,7 @@ define(function (require, exports) {
         var dialog = Dialogs.showModalDialog(
             DefaultDialogs.DIALOG_ID_INFO,
             ExtensionStrings.DIALOG_SETTINGS_TITLE,
-            _renderDialogTemplate({ settings: _settings }),
+            _renderDialogTemplate({ eachSetting: _eachSetting }),
             [
                 {
                     className: Dialogs.DIALOG_BTN_CLASS_NORMAL,
@@ -115,10 +123,8 @@ define(function (require, exports) {
         );
 
         $dlg = dialog.getElement();
-        _settings.forEach(function _iterate(setting) {
-            $dlg.find("#staticpreview-setting-" + setting.id).val(
-                _prefs.get(setting.id)
-            );
+        _eachSetting(function _iterate(id, setting) {
+            $dlg.find("#staticpreview-setting-" + id).val(_prefs.get(id));
         });
         dialog.getPromise().then(_handleDialogAction.bind(null, $dlg));
     }

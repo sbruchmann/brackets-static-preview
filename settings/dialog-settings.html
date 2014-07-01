@@ -1,9 +1,9 @@
 <table class="table">
     <tbody>
-    <% settings.forEach(function _iterate(setting) { %>
+    <% eachSetting(function (id, setting) { %>
         <tr>
-            <td><label for="staticpreview-setting-<%= setting.id %>"><%= setting.label %></label></td>
-            <td><input id="staticpreview-setting-<%= setting.id %>" type="text" /></td>
+            <td><label for="staticpreview-setting-<%= id %>"><%= setting.label %></label></td>
+            <td><input id="staticpreview-setting-<%= id %>" type="text" /></td>
         </tr>
     <% }) %>
     </tbody>
