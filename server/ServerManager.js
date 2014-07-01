@@ -90,8 +90,8 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred();
         var options = {
             basepath: ProjectManager.getProjectRoot().fullPath,
-            hostname: SettingsManager.getSetting("hostname"),
-            port: SettingsManager.getSetting("port")
+            hostname: SettingsManager.get("hostname"),
+            port: SettingsManager.get("port")
         };
 
         $ProjectManager.on("projectClose", _autoStopServer);

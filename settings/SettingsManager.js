@@ -50,7 +50,7 @@ define(function (require, exports) {
      * @param {String} id
      * @return {?}
      */
-    function getSetting(id) {
+    function get(id) {
         return _prefs.get(id);
     }
 
@@ -144,7 +144,7 @@ define(function (require, exports) {
     }
 
     // Define public API
-    exports.getSetting = getSetting;
+    exports.get = get;
     exports.setupPreferences = setupPreferences;
     exports.showSettingsDialog = showSettingsDialog;
 });
