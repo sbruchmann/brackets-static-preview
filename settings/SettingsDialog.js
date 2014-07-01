@@ -19,6 +19,11 @@ define(function (require, exports) {
     var _renderDialogTemplate = _.template(DialogTemplate);
 
     /**
+     * @type {String}
+     */
+    var _selectorPrefix = "#staticpreview-setting-";
+
+    /**
      * @param {JQuery} $dlg Dialog
      * @param {String} action Action
      */
@@ -30,7 +35,7 @@ define(function (require, exports) {
         if (action === "save-settings") {
             Settings.each(function (id) {
                 SettingsManager.set(id,
-                  $dlg.find("#staticpreview-setting-" + id).val()
+                  $dlg.find(_selectorPrefix + id).val()
                 );
             });
 
@@ -66,9 +71,7 @@ define(function (require, exports) {
 
         $dlg = dialog.getElement();
         Settings.each(function _iterate(id) {
-            $dlg.find("#staticpreview-setting-" + id).val(
-                SettingsManager.get(id)
-            );
+            $dlg.find(_selectorPrefix + id).val(SettingsManager.get(id));
         });
         dialog.getPromise().then(_handleDialogAction.bind(null, $dlg));
     }
