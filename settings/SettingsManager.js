@@ -75,8 +75,7 @@ define(function (require, exports) {
 
         if (action === "save-settings") {
             _eachSetting(function (id) {
-                _prefs.set(id, $dlg.find("#staticpreview-setting-" + id).val());
-                _prefs.save();
+                set(id, $dlg.find("#staticpreview-setting-" + id).val());
             });
 
             if (ServerManager.isRunning()) {
@@ -90,6 +89,15 @@ define(function (require, exports) {
     }
 
     /**
+     * @param {String} settingsId
+     * @param {*} value
+     */
+    function set(settingsId, value) {
+        _prefs.set(settingsId, value);
+        _prefs.save();
+    }
+
+    /**
      * Defines default preferences
      */
     function setupPreferences() {
@@ -97,7 +105,7 @@ define(function (require, exports) {
         _eachSetting(function _iterate(id, setting) {
             if (typeof _prefs.get(id) !== setting.type) {
                 _prefs.definePreference(id, setting.type, setting.default);
-                _prefs.set(id, setting.default);
+                set(id, setting.default);
             }
         });
     }
@@ -151,6 +159,7 @@ define(function (require, exports) {
 
     // Define public API
     exports.get = get;
+    exports.set = set;
     exports.setupPreferences = setupPreferences;
     exports.showSettingsDialog = showSettingsDialog;
 });
