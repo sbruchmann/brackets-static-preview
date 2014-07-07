@@ -33,7 +33,7 @@ define(function (require, exports) {
     /**
      * Defines default preferences
      */
-    function setupPreferences() {
+    function init() {
         _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
         Settings.each(function _iterate(id, setting) {
             if (typeof _prefs.get(id) !== setting.type) {
@@ -45,6 +45,6 @@ define(function (require, exports) {
 
     // Define public API
     exports.get = get;
+    exports.init = init;
     exports.set = set;
-    exports.setupPreferences = setupPreferences;
 });

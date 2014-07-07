@@ -10,7 +10,7 @@ define(function (require) {
     require("settings/SettingsCommandHandlers");
 
     function _onAppReady() {
-        SettingsManager.setupPreferences();
+        SettingsManager.init();
         MenuItems.init();
         ToolbarButton.init();
     }
