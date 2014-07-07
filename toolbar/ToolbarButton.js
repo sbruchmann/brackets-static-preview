@@ -3,6 +3,7 @@ define(function (require, exports, module) {
 
     var _              = brackets.getModule("thirdparty/lodash"),
         CommandManager = brackets.getModule("command/CommandManager"),
+        Commands       = require("command/Commands"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         ServerManager  = require("server/ServerManager");
 
@@ -28,7 +29,7 @@ define(function (require, exports, module) {
             .then(function _callback() {
                 $btn.appendTo("#main-toolbar .buttons")
                 .click(function() {
-                    CommandManager.execute("sbruchmann.staticpreview");
+                    CommandManager.execute(Commands.STATIC_PREVIEW);
                 });
                 $(ServerManager).on("stateChange", _handleStateChange);
             });
