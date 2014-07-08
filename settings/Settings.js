@@ -20,6 +20,12 @@ define(function (require, exports) {
             id: "port",
             label: Strings.SETTING_PORT,
             type: "number"
+        },
+        {
+            default: 35729,
+            id: "livereloadPort",
+            label: Strings.SETTING_LIVERELOADPORT,
+            type: "number"
         }
     ];
 

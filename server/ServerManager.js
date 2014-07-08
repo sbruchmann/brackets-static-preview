@@ -91,6 +91,7 @@ define(function (require, exports, module) {
         var options = {
             basepath: ProjectManager.getProjectRoot().fullPath,
             hostname: SettingsManager.get("hostname"),
+            livereloadPort: SettingsManager.get("livereloadPort"),
             port: SettingsManager.get("port")
         };
 
