@@ -40,7 +40,7 @@ HTTPServer.prototype._setup = function _setup(options) {
     app
         .use(cors())
         .use(bodyParser.urlencoded({ extended: true }))
-        .use(livereload({ port: 35729 }))
+        .use(livereload({ port: options.livereloadPort }))
         .use(serveStatic(basepath))
         .use(serveIndex(basepath));
 
@@ -90,7 +90,7 @@ HTTPServer.prototype.start = function start(options, done) {
     this._httpServer
         .on("connection", this._handleConnection.bind(this))
         .listen(options.port, options.hostname, function _callback() {
-            lrServer.listen(35729);
+            lrServer.listen(options.livereloadPort);
             done(null, options);
         });
 
