@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+* New: Livereload
+* Change: Use Twitter Bootstrap for settings dialog
+* Fix: Several small bug fixes
+
 ## 0.1.3
 * Localization: Create italian locale (Author: [@Denisov21](https://github.com/Denisov21))
 * Localization: Create german locale
