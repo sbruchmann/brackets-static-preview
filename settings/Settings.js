@@ -8,9 +8,7 @@ define(function (require, exports) {
      */
     var _settings = [
         {
-            // Windows 7 does not resolve hostname `0.0.0.0`
-            // @see https://github.com/sbruchmann/brackets-static-preview/issues/12
-            default: brackets.platform === "win" ? "localhost" : "0.0.0.0",
+            default: "localhost",
             id: "hostname",
             label: Strings.SETTING_HOSTNAME,
             type: "string"
