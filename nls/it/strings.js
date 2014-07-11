@@ -7,5 +7,7 @@ define({
     "DIALOG_SETTINGS_TITLE" : "Impostazioni Anteprima Statica",
     "SETTING_HOSTNAME" : "Hostname",
     "SETTING_LIVERELOADPORT": "Porta Livereload",
-    "SETTING_PORT" : "Porta"
+    "SETTING_PORT" : "Porta",
+    "TOOLBAR_LABEL_STOP": "Stop Anteprima Statica",
+    "TOOLBAR_LABEL_START": "Avvia Anteprima Statica"
 });
