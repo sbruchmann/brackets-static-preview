@@ -6,5 +6,6 @@ define({
     "DIALOG_RESTART_TEXT" : "Per applicare le impostazioni modificate, Anteprima Statica sarà necessario riavviare.",
     "DIALOG_SETTINGS_TITLE" : "Impostazioni Anteprima Statica",
     "SETTING_HOSTNAME" : "Hostname",
+    "SETTING_LIVERELOADPORT": "Porta Livereload",
     "SETTING_PORT" : "Porta"
 });
