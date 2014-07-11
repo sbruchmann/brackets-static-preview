@@ -5,6 +5,7 @@ define(function (require, exports, module) {
         CommandManager = brackets.getModule("command/CommandManager"),
         Commands       = require("command/Commands"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        Nls            = require("i18n!nls/strings"),
         ServerManager  = require("server/ServerManager");
 
     var _allClasses = null;
@@ -16,12 +17,15 @@ define(function (require, exports, module) {
     _classNames[ServerManager.STATE_ID_RUNNING] = _classPrefix + ServerManager.STATE_ID_RUNNING;
     _allClasses = _.values(_classNames).join(" ");
 
-    var $btn = $("<a id='toolbar-staticpreview' href=''></a>");
+    var $btn = $("<a id='toolbar-staticpreview' href='' title='" + Nls.TOOLBAR_LABEL_START + "'></a>");
 
     function _handleStateChange(event, params) {
+        var label = ServerManager.isRunning() ? Nls.TOOLBAR_LABEL_STOP : Nls.TOOLBAR_LABEL_START;
+
         $btn
             .removeClass(_allClasses)
-            .addClass(_classNames[params.stateId]);
+            .addClass(_classNames[params.stateId])
+            .attr("title", label);
     }
 
     function init() {

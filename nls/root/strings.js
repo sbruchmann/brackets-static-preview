@@ -7,5 +7,7 @@ define({
     "DIALOG_SETTINGS_TITLE": "Static Preview Settings",
     "SETTING_HOSTNAME": "Hostname",
     "SETTING_LIVERELOADPORT": "Livereload Port",
-    "SETTING_PORT": "Port"
+    "SETTING_PORT": "Port",
+    "TOOLBAR_LABEL_STOP": "Stop Static Preview",
+    "TOOLBAR_LABEL_START": "Start Static Preview"
 });
