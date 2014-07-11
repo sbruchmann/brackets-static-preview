@@ -8,4 +8,6 @@ define({
     "SETTING_HOSTNAME" : "Hostname",
     "SETTING_LIVERELOADPORT": "Porta Livereload",
     "SETTING_PORT" : "Porta"
+    "TOOLBAR_LABEL_STOP": "Stop Anteprima Statica!",
+    "TOOLBAR_LABEL_START": "Avvia Anteprima Statica!"
 });
