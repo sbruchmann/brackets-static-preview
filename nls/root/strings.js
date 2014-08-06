@@ -5,6 +5,7 @@ define({
     "DIALOG_RESTART_TITLE": "Apply Settings",
     "DIALOG_RESTART_TEXT": "In order to apply changed settings, Static Preview will need to restart.",
     "DIALOG_SETTINGS_TITLE": "Static Preview Settings",
+    "SETTING_BASEPATH": "Root Directory",
     "SETTING_HOSTNAME": "Hostname",
     "SETTING_LIVERELOADPORT": "Livereload Port",
     "SETTING_PORT": "Port",

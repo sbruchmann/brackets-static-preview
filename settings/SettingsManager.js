@@ -2,8 +2,8 @@ define(function (require, exports) {
     "use strict";
 
     // Module dependencies
-    var _                  = brackets.getModule("thirdparty/lodash"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
+    var PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
+        ProjectManager     = brackets.getModule("project/ProjectManager"),
         Settings           = require("settings/Settings");
 
     /**
@@ -26,7 +26,18 @@ define(function (require, exports) {
      * @param {*} value
      */
     function set(settingsId, value) {
-        _prefs.set(settingsId, value);
+        /**
+         * @NOTE This is a quick hack for #26.
+         */
+        if (settingsId === "basepath") {
+            _prefs.set(settingsId, value, {
+                location: {
+                    scope: "project"
+                }
+            });
+        } else {
+            _prefs.set(settingsId, value);
+        }
         _prefs.save();
     }
 
@@ -37,6 +48,12 @@ define(function (require, exports) {
         _prefs = PreferencesManager.getExtensionPrefs("sbruchmann.staticpreview");
         Settings.each(function _iterate(id, setting) {
             if (typeof _prefs.get(id) !== setting.type) {
+                /**
+                 * @NOTE Quick hack for #26
+                 */
+                if (id === "basepath") {
+                    setting.default = ProjectManager.getProjectRoot().fullPath;
+                }
                 _prefs.definePreference(id, setting.type, setting.default);
                 set(id, setting.default);
             }

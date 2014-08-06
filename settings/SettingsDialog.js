@@ -5,6 +5,7 @@ define(function (require, exports) {
         Dialogs            = brackets.getModule("widgets/Dialogs"),
         DialogTemplate     = require("text!settings/dialog-settings.html"),
         ExtensionStrings   = require("i18n!nls/strings"),
+        ProjectManager     = brackets.getModule("project/ProjectManager"),
         ServerManager      = require("server/ServerManager"),
         Settings           = require("settings/Settings"),
         SettingsManager    = require("settings/SettingsManager"),
@@ -71,7 +72,16 @@ define(function (require, exports) {
 
         $dlg = dialog.getElement();
         Settings.each(function _iterate(id) {
-            $dlg.find(_selectorPrefix + id).val(SettingsManager.get(id));
+            /**
+             * @NOTE Quick hack for #26
+             */
+            if (id !== "basepath") {
+                $dlg.find(_selectorPrefix + id).val(SettingsManager.get(id));
+            } else {
+                $dlg.find(_selectorPrefix + id).val(
+                    SettingsManager.get(id) || ProjectManager.getProjectRoot().fullPath
+                );
+            }
         });
         dialog.getPromise().then(_handleDialogAction.bind(null, $dlg));
     }

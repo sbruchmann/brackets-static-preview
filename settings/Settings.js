@@ -24,6 +24,12 @@ define(function (require, exports) {
             id: "livereloadPort",
             label: Strings.SETTING_LIVERELOADPORT,
             type: "number"
+        },
+        {
+            default: "",
+            id: "basepath",
+            label: Strings.SETTING_BASEPATH,
+            type: "string"
         }
     ];
 

@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.2.1
+* New: The root directory for static preview is now configurable. See https://github.com/sbruchmann/brackets-static-preview/issues/26
+
 ## 0.2.0
 * New: Livereload
 * Change: Use Twitter Bootstrap for settings dialog
