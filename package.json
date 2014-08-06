@@ -1,6 +1,6 @@
 {
   "name": "sbruchmann.static-preview",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Serves your project via a static web server and opens it in your default browser.",
   "repository": {
     "type": "git",
