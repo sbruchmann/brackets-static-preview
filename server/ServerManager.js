@@ -89,7 +89,7 @@ define(function (require, exports, module) {
     function start() {
         var deferred = new $.Deferred();
         var options = {
-            basepath: SettingsManager.get("basepath"),
+            basepath: SettingsManager.get("basepath") || ProjectManager.getProjectRoot().fullPath,
             hostname: SettingsManager.get("hostname"),
             livereloadPort: SettingsManager.get("livereloadPort"),
             port: SettingsManager.get("port")
