@@ -28,9 +28,14 @@ define(function (require, exports, module) {
 
     function handleStateChange(event, state) {
         isRunning = (state === LocalServer.STATE_RUNNING);
+
         CommandManager
             .get(COMMAND_ID)
             .setChecked(isRunning);
+
+        $toolbarBtn
+            .attr("class", "") // Remove all previous class names
+            .addClass(isRunning ? LocalServer.STATE_RUNNING : LocalServer.STATE_IDLE);
     }
 
     LocalServer.on("stateChange", handleStateChange);
