@@ -1,11 +1,10 @@
-define(function (require, exports, module) {
+define(function (require) {
     "use strict";
 
     // Dependencies
     var CommandManager = brackets.getModule("command/CommandManager");
-    var ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
+    var LocalServer = require("LocalServer");
     var Menus = brackets.getModule("command/Menus");
-    var NodeDomain = brackets.getModule("utils/NodeDomain");
 
     /**
      * @const
@@ -15,22 +14,15 @@ define(function (require, exports, module) {
     var COMMAND_ID = "sbruchmann.staticpreview.toggleHTTPServer";
 
     /**
-     * @type {NodeDomain}
-     * @private
-     */
-    var localServer = new NodeDomain(
-        "sbruchmann.staticpreview.LocalServer",
-        ExtensionUtils.getModulePath(module, "LocalServerDomain.js")
-    );
-
-    /**
      * @type {boolean}
      * @private
      */
     var isRunning = false;
 
     function toggleLocalServer() {
-        localServer.exec(!isRunning ? "start" : "stop")
+        var promise = !isRunning ? LocalServer.start() : LocalServer.stop();
+
+        promise
             .done(function callback() {
                isRunning = !isRunning;
             })
