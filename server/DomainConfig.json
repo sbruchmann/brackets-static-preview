@@ -1,7 +1,0 @@
-{
-    "id": "sbruchmann.staticpreview.ServerDomain",
-    "commands": {
-        "STOP": "stop",
-        "START": "start"
-    }
-}
