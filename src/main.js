@@ -1,8 +1,9 @@
-define(function (require) {
+define(function (require, exports, module) {
     "use strict";
 
     // Dependencies
     var CommandManager = brackets.getModule("command/CommandManager");
+    var ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
     var LocalServer = require("LocalServer");
     var Menus = brackets.getModule("command/Menus");
 
@@ -12,6 +13,12 @@ define(function (require) {
      * @private
      */
     var COMMAND_ID = "sbruchmann.staticpreview.toggleHTTPServer";
+
+    /**
+     * @type {JQuery}
+     * @private
+     */
+    var $toolbarBtn = $(document.createElement("a"));
 
     /**
      * @type {boolean}
@@ -36,6 +43,21 @@ define(function (require) {
         }
     }
 
+    $toolbarBtn
+        .prop("id", "static-preview__toggle")
+        .hide()
+        .appendTo("#main-toolbar .buttons")
+        .click(function handleClick() {
+            CommandManager.execute(COMMAND_ID);
+        });
+
     CommandManager.register("Static Preview", COMMAND_ID, toggleLocalServer);
     Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(COMMAND_ID);
+
+    ExtensionUtils
+        .loadStyleSheet(module, "styles.less")
+        .then(function callback() {
+            console.debug("Done");
+            $toolbarBtn.show();
+        });
 });
