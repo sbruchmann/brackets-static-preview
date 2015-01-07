@@ -27,8 +27,8 @@ function init(domainManager) {
     domainManager.registerCommand(DOMAIN_ID, "stop", stop, true);
 }
 
-function start(callback) {
-    server = new HTTPServer();
+function start(options, callback) {
+    server = new HTTPServer(options);
     server.listen(callback);
 }
 

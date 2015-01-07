@@ -4,6 +4,7 @@ define(function (require, exports, module) {
     var EventDispatcher = brackets.getModule("utils/EventDispatcher");
     var ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
     var NodeDomain = brackets.getModule("utils/NodeDomain");
+    var ProjectManager = brackets.getModule("project/ProjectManager");
 
     // Setup event dispatching
     EventDispatcher.makeEventDispatcher(exports);
@@ -32,7 +33,13 @@ define(function (require, exports, module) {
     );
 
     function start() {
-        return localServer.exec("start").then(function callback() {
+        var options = {
+            hostname: "localhost",
+            port: 3000,
+            root: ProjectManager.getProjectRoot().fullPath
+        };
+
+        return localServer.exec("start", options).then(function callback() {
             exports.trigger("stateChange", STATE_RUNNING);
         });
     }
