@@ -9,6 +9,20 @@ define(function (require, exports, module) {
     EventDispatcher.makeEventDispatcher(exports);
 
     /**
+     * @const
+     * @type {string}
+     * @public
+     */
+    var STATE_IDLE = "idle";
+
+    /**
+     * @const
+     * @type {string}
+     * @public
+     */
+    var STATE_RUNNING = "running";
+
+    /**
      * @type {NodeDomain}
      * @private
      */
@@ -18,14 +32,20 @@ define(function (require, exports, module) {
     );
 
     function start() {
-        return localServer.exec("start");
+        return localServer.exec("start").then(function callback() {
+            exports.trigger("stateChange", STATE_RUNNING);
+        });
     }
 
     function stop() {
-        return localServer.exec("stop");
+        return localServer.exec("stop").then(function callback() {
+            exports.trigger("stateChange", STATE_IDLE);
+        });
     }
 
     // Define public API
+    exports.STATE_IDLE = STATE_IDLE;
+    exports.STATE_RUNNING = STATE_RUNNING;
     exports.start = start;
     exports.stop = stop;
 });

@@ -19,16 +19,21 @@ define(function (require) {
      */
     var isRunning = false;
 
-    function toggleLocalServer() {
-        var promise = !isRunning ? LocalServer.start() : LocalServer.stop();
+    function handleStateChange(event, state) {
+        isRunning = (state === LocalServer.STATE_RUNNING);
+        CommandManager
+            .get(COMMAND_ID)
+            .setChecked(isRunning);
+    }
 
-        promise
-            .done(function callback() {
-               isRunning = !isRunning;
-            })
-            .always(function callback() {
-                CommandManager.get(COMMAND_ID).setChecked(isRunning);
-            });
+    LocalServer.on("stateChange", handleStateChange);
+
+    function toggleLocalServer() {
+        if (!isRunning) {
+            LocalServer.start();
+        } else {
+            LocalServer.stop();
+        }
     }
 
     CommandManager.register("Static Preview", COMMAND_ID, toggleLocalServer);
