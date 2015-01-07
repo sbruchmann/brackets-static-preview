@@ -18,9 +18,9 @@ define(function (require, exports, module) {
      * @type {NodeDomain}
      * @private
      */
-    var httpServer = new NodeDomain(
-        "sbruchmann.staticpreview.HTTPServer",
-        ExtensionUtils.getModulePath(module, "HTTPServerDomain.js")
+    var localServer = new NodeDomain(
+        "sbruchmann.staticpreview.LocalServer",
+        ExtensionUtils.getModulePath(module, "LocalServerDomain.js")
     );
 
     /**
@@ -29,8 +29,8 @@ define(function (require, exports, module) {
      */
     var isRunning = false;
 
-    function toggleHTTPServer() {
-        httpServer.exec(!isRunning ? "start" : "stop")
+    function toggleLocalServer() {
+        localServer.exec(!isRunning ? "start" : "stop")
             .done(function callback() {
                isRunning = !isRunning;
             })
@@ -39,6 +39,6 @@ define(function (require, exports, module) {
             });
     }
 
-    CommandManager.register("Static Preview", COMMAND_ID, toggleHTTPServer);
+    CommandManager.register("Static Preview", COMMAND_ID, toggleLocalServer);
     Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(COMMAND_ID);
 });
