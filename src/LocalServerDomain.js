@@ -5,7 +5,7 @@
  * @type {string}
  * @private
  */
-var DOMAIN_ID = "sbruchmann.staticpreview.HTTPServer";
+var DOMAIN_ID = "sbruchmann.staticpreview.LocalServer";
 
 function init(domainManager) {
     if (!domainManager.hasDomain(DOMAIN_ID)) {
