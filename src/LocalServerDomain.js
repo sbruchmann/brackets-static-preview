@@ -1,11 +1,19 @@
 "use strict";
 
+var HTTPServer = require("./HTTPServer");
+
 /**
  * @const
  * @type {string}
  * @private
  */
 var DOMAIN_ID = "sbruchmann.staticpreview.LocalServer";
+
+/**
+ * @type {HTTPServer}
+ * @private
+ */
+var server = null;
 
 function init(domainManager) {
     if (!domainManager.hasDomain(DOMAIN_ID)) {
@@ -20,11 +28,12 @@ function init(domainManager) {
 }
 
 function start(callback) {
-    setTimeout(callback.bind(null, null));
+    server = new HTTPServer();
+    server.listen(callback);
 }
 
 function stop(callback) {
-    setTimeout(callback.bind(null, null));
+    server.close(callback);
 }
 
 exports.init = init;

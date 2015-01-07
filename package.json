@@ -28,5 +28,6 @@
     "general"
   ],
   "dependencies": {
+    "connect": "^3.3.4"
   }
 }
