@@ -54,6 +54,7 @@ HTTPServer.prototype.close = function close(callback) {
     this._connections.forEach(function iterate(connection) {
         connection.destroy();
     });
+    this._livereloadServer.close();
     this._server.close(callback);
 };
 
