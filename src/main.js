@@ -62,7 +62,6 @@ define(function (require, exports, module) {
     ExtensionUtils
         .loadStyleSheet(module, "styles.less")
         .then(function callback() {
-            console.debug("Done");
             $toolbarBtn.show();
         });
 });
