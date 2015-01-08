@@ -6,6 +6,7 @@ define(function (require, exports, module) {
     var ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
     var LocalServer = require("LocalServer");
     var Menus = brackets.getModule("command/Menus");
+    var ProjectManager = brackets.getModule("project/ProjectManager");
 
     /**
      * @const
@@ -26,6 +27,12 @@ define(function (require, exports, module) {
      */
     var isRunning = false;
 
+    function autoStopServer() {
+        if (isRunning) {
+            LocalServer.stop();
+        }
+    }
+
     function handleStateChange(event, state) {
         isRunning = (state === LocalServer.STATE_RUNNING);
 
@@ -37,8 +44,6 @@ define(function (require, exports, module) {
             .attr("class", "") // Remove all previous class names
             .addClass(isRunning ? LocalServer.STATE_RUNNING : LocalServer.STATE_IDLE);
     }
-
-    LocalServer.on("stateChange", handleStateChange);
 
     function toggleLocalServer() {
         if (!isRunning) {
@@ -58,6 +63,10 @@ define(function (require, exports, module) {
 
     CommandManager.register("Static Preview", COMMAND_ID, toggleLocalServer);
     Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(COMMAND_ID);
+
+    // Register events
+    LocalServer.on("stateChange", handleStateChange);
+    ProjectManager.on("beforeProjectClose", autoStopServer);
 
     ExtensionUtils
         .loadStyleSheet(module, "styles.less")
