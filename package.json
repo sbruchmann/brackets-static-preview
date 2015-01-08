@@ -28,8 +28,13 @@
     "general"
   ],
   "dependencies": {
+    "body-parser": "^1.10.1",
     "connect": "^3.3.4",
+    "connect-livereload-safe": "0.0.5",
+    "cors": "^2.5.2",
+    "sane": "^0.5.3",
     "serve-index": "^1.6.0",
-    "serve-static": "^1.8.0"
+    "serve-static": "^1.8.0",
+    "tiny-lr": "^0.1.4"
   }
 }

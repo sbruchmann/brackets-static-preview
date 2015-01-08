@@ -28,7 +28,12 @@ function init(domainManager) {
 }
 
 function start(options, callback) {
-    server = new HTTPServer(options);
+    try {
+        server = new HTTPServer(options);
+    } catch (err) {
+        return callback(null, callback);
+    }
+
     server.listen(callback);
 }
 
