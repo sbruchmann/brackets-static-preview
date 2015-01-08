@@ -39,9 +39,12 @@ define(function (require, exports, module) {
             root: ProjectManager.getProjectRoot().fullPath
         };
 
-        return localServer.exec("start", options).then(function callback() {
-            exports.trigger("stateChange", STATE_RUNNING);
-        });
+        return localServer.exec("start", options)
+            .fail(console.error.bind(console))
+            .then(function callback() {
+                console.log.apply(console);
+                exports.trigger("stateChange", STATE_RUNNING);
+            });
     }
 
     function stop() {
