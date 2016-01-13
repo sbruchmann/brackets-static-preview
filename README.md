@@ -1,6 +1,8 @@
 Static Preview
 ==============
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/) 
+
 This extension for [Brackets](http://brackets.io/) allows you to run your current project on a static web server.
 **Note**: _Static Preview_ is currently work in progress.
 
